@@ -44,13 +44,13 @@
 #define CLK_DIV4		0x0310
 #define CLK_DIV5		0x0314
 #define CLK_DIV6		0x0318
-#define CLK_DIV7		0x031c
-#define CLK_GATE_MAIN0		0x0400
-#define CLK_GATE_MAIN1		0x0404
-#define CLK_GATE_MAIN2		0x0408
-#define CLK_GATE_PERI0		0x0420
-#define CLK_GATE_PERI1		0x0424
-#define CLK_GATE_SCLK0		0x0440
+#define CLK_DIV7		0x031c		//xx
+#define CLK_GATE_MAIN0		0x0400	//xx
+#define CLK_GATE_MAIN1		0x0404	//xx
+#define CLK_GATE_MAIN2		0x0408	//xx
+#define CLK_GATE_PERI0		0x0420	//xx
+#define CLK_GATE_PERI1		0x0424	//xx
+#define CLK_GATE_SCLK0		0x0440	//xx
 #define CLK_GATE_SCLK1		0x0444
 #define CLK_GATE_IP0		0x0460
 #define CLK_GATE_IP1		0x0464
@@ -214,7 +214,7 @@ static const char *const mout_audio2_p[] __initconst = {
 static const char *const mout_spdif_p[] __initconst = {
 	"dout_audio0",
 	"dout_audio1",
-	"dout_audio3",
+	"dout_audio2",
 };
 
 static const char *const mout_group3_p[] __initconst = {
@@ -228,8 +228,8 @@ static const char *const mout_group4_p[] __initconst = {
 };
 
 static const char *const mout_flash_p[] __initconst = {
-	"dout_hclkd",
-	"dout_hclkp"
+	"dout_hclkp",
+	"dout_hclkd"
 };
 
 static const char *const mout_dac_p[] __initconst = {
@@ -238,8 +238,8 @@ static const char *const mout_dac_p[] __initconst = {
 };
 
 static const char *const mout_hdmi_p[] __initconst = {
-	"sclk_hdmiphy",
-	"dout_tblk"
+	"dout_tblk",
+	"sclk_hdmiphy"
 };
 
 static const char *const mout_mixer_p[] __initconst = {
@@ -367,7 +367,7 @@ static const struct samsung_fixed_factor_clock ffactor_clks[] __initconst = {
 /* PLL input mux (fin_pll), which needs to be registered before PLLs. */
 static const struct samsung_mux_clock early_mux_clks[] __initconst = {
 	MUX_F(FIN_PLL, "fin_pll", fin_pll_p, OM_STAT, 0, 1,
-					CLK_MUX_READ_ONLY, 0),
+					0, CLK_MUX_READ_ONLY),
 };
 
 /* Common clock muxes. */
@@ -525,13 +525,13 @@ static const struct samsung_div_clock s5pv210_div_clks[] __initconst = {
 	DIV(DOUT_SPI1, "dout_spi1", "mout_spi1", CLK_DIV5, 4, 4),
 
 	DIV(DOUT_DMC0, "dout_dmc0", "mout_dmc0", CLK_DIV6, 28, 4),
-	DIV(DOUT_PWI, "dout_pwi", "mout_pwi", CLK_DIV6, 24, 4),
-	DIV(DOUT_HPM, "dout_hpm", "dout_copy", CLK_DIV6, 20, 3),
-	DIV(DOUT_COPY, "dout_copy", "mout_hpm", CLK_DIV6, 16, 3),
+	DIV(DOUT_PWI, "dout_pwi", "mout_pwi", CLK_DIV6, 24, 4),				//xx
+	DIV(DOUT_HPM, "dout_hpm", "dout_copy", CLK_DIV6, 20, 3),			//xx
+	DIV(DOUT_COPY, "dout_copy", "mout_hpm", CLK_DIV6, 16, 3),			//xx
 	DIV(DOUT_AUDIO2, "dout_audio2", "mout_audio2", CLK_DIV6, 8, 4),
 
-	DIV(DOUT_DPM, "dout_dpm", "dout_pclkp", CLK_DIV7, 8, 7),
-	DIV(DOUT_DVSEM, "dout_dvsem", "dout_pclkp", CLK_DIV7, 0, 7),
+	DIV(DOUT_DPM, "dout_dpm", "dout_pclkp", CLK_DIV7, 8, 7),			//xx
+	DIV(DOUT_DVSEM, "dout_dvsem", "dout_pclkp", CLK_DIV7, 0, 7),		//xx
 };
 
 /* S5P6442-specific clock dividers. */
@@ -567,6 +567,8 @@ static const struct samsung_gate_clock gate_clks[] __initconst = {
 
 	GATE(CLK_PCM1, "pcm1", "dout_pclkp", CLK_GATE_IP3, 29, 0, 0),
 	GATE(CLK_PCM0, "pcm0", "dout_pclkp", CLK_GATE_IP3, 28, 0, 0),
+	// 27 syscon
+	// 26 gpio
 	GATE(CLK_TSADC, "tsadc", "dout_pclkp", CLK_GATE_IP3, 24, 0, 0),
 	GATE(CLK_PWM, "pwm", "dout_pclkp", CLK_GATE_IP3, 23, 0, 0),
 	GATE(CLK_WDT, "watchdog", "dout_pclkp", CLK_GATE_IP3, 22, 0, 0),
@@ -580,7 +582,7 @@ static const struct samsung_gate_clock gate_clks[] __initconst = {
 	GATE(CLK_I2C2, "i2c2", "dout_pclkp", CLK_GATE_IP3, 9, 0, 0),
 	GATE(CLK_I2C0, "i2c0", "dout_pclkp", CLK_GATE_IP3, 7, 0, 0),
 	GATE(CLK_I2S1, "i2s1", "dout_pclkp", CLK_GATE_IP3, 5, 0, 0),
-	GATE(CLK_I2S0, "i2s0", "dout_pclkp", CLK_GATE_IP3, 4, 0, 0),
+	GATE(CLK_I2S0, "i2s0", "dout_pclkp", CLK_GATE_IP3, 4, 0, 0),		//SCLK_AUDIO0??
 
 	GATE(CLK_SECKEY, "seckey", "dout_pclkp", CLK_GATE_IP4, 3, 0, 0),
 	GATE(CLK_CHIPID, "chipid", "dout_pclkp", CLK_GATE_IP4, 0, 0, 0),
@@ -628,7 +630,7 @@ static const struct samsung_gate_clock s5pv210_gate_clks[] __initconst = {
 	GATE(CLK_MFC, "mfc", "dout_hclkm", CLK_GATE_IP0, 16, 0, 0),
 	GATE(CLK_G2D, "g2d", "dout_hclkd", CLK_GATE_IP0, 12, 0, 0),
 	GATE(CLK_G3D, "g3d", "dout_hclkm", CLK_GATE_IP0, 8, 0, 0),
-	GATE(CLK_IMEM, "imem", "dout_hclkm", CLK_GATE_IP0, 5, 0, 0),
+	GATE(CLK_IMEM, "imem", "dout_hclkm", CLK_GATE_IP0, 5, 0, 0),		//=200,dout_pclkm=100??
 	GATE(CLK_PDMA1, "pdma1", "dout_hclkp", CLK_GATE_IP0, 4, 0, 0),
 
 	GATE(CLK_NFCON, "nfcon", "dout_hclkp", CLK_GATE_IP1, 28, 0, 0),
@@ -641,11 +643,14 @@ static const struct samsung_gate_clock s5pv210_gate_clks[] __initconst = {
 	GATE(CLK_TZIC2, "tzic2", "dout_hclkm", CLK_GATE_IP2, 30, 0, 0),
 	GATE(CLK_TZIC1, "tzic1", "dout_hclkm", CLK_GATE_IP2, 29, 0, 0),
 	GATE(CLK_TZIC0, "tzic0", "dout_hclkm", CLK_GATE_IP2, 28, 0, 0),
-	GATE(CLK_TSI, "tsi", "dout_hclkd", CLK_GATE_IP2, 20, 0, 0),
+	// 27-24 vic3-vic0
+	// 1 dmc1
+	// 0 dmc0
+	GATE(CLK_TSI, "tsi", "dout_hclkd", CLK_GATE_IP2, 20, 0, 0),			//??
 	GATE(CLK_HSMMC3, "hsmmc3", "dout_hclkp", CLK_GATE_IP2, 19, 0, 0),
 	GATE(CLK_JTAG, "jtag", "dout_hclkp", CLK_GATE_IP2, 11, 0, 0),
 	GATE(CLK_CORESIGHT, "coresight", "dout_pclkp", CLK_GATE_IP2, 8, 0, 0),
-	GATE(CLK_SDM, "sdm", "dout_pclkm", CLK_GATE_IP2, 1, 0, 0),
+	GATE(CLK_SDM, "sdm", "dout_pclkm", CLK_GATE_IP2, 1, 0, 0),			//??
 
 	GATE(CLK_PCM2, "pcm2", "dout_pclkp", CLK_GATE_IP3, 30, 0, 0),
 	GATE(CLK_UART3, "uart3", "dout_pclkp", CLK_GATE_IP3, 20, 0, 0),
@@ -657,15 +662,16 @@ static const struct samsung_gate_clock s5pv210_gate_clks[] __initconst = {
 	GATE(CLK_AC97, "ac97", "dout_pclkp", CLK_GATE_IP3, 1, 0, 0),
 	GATE(CLK_SPDIF, "spdif", "dout_pclkp", CLK_GATE_IP3, 0, 0, 0),
 
-	GATE(CLK_TZPC3, "tzpc.3", "dout_pclkd", CLK_GATE_IP4, 8, 0, 0),
-	GATE(CLK_TZPC2, "tzpc.2", "dout_pclkd", CLK_GATE_IP4, 7, 0, 0),
+	GATE(CLK_TZPC3, "tzpc.3", "dout_pclkd", CLK_GATE_IP4, 8, 0, 0),		//??
+	GATE(CLK_TZPC2, "tzpc.2", "dout_pclkd", CLK_GATE_IP4, 7, 0, 0),		//??
 	GATE(CLK_TZPC1, "tzpc.1", "dout_pclkp", CLK_GATE_IP4, 6, 0, 0),
 	GATE(CLK_TZPC0, "tzpc.0", "dout_pclkm", CLK_GATE_IP4, 5, 0, 0),
-	GATE(CLK_IEM_APC, "iem_apc", "dout_pclkp", CLK_GATE_IP4, 2, 0, 0),
-	GATE(CLK_IEM_IEC, "iem_iec", "dout_pclkp", CLK_GATE_IP4, 1, 0, 0),
+	GATE(CLK_IEM_APC, "iem_apc", "dout_pclkp", CLK_GATE_IP4, 2, 0, 0),	//xx
+	GATE(CLK_IEM_IEC, "iem_iec", "dout_pclkp", CLK_GATE_IP4, 1, 0, 0),	//xx
 
 	GATE(CLK_JPEG, "jpeg", "dout_hclkd", CLK_GATE_IP5, 29, 0, 0),
 
+	// 29 muxpwi
 	GATE(SCLK_SPDIF, "sclk_spdif", "mout_spdif", CLK_SRC_MASK0, 27,
 			CLK_SET_RATE_PARENT, 0),
 	GATE(SCLK_AUDIO2, "sclk_audio2", "dout_audio2", CLK_SRC_MASK0, 26,
@@ -676,6 +682,7 @@ static const struct samsung_gate_clock s5pv210_gate_clks[] __initconst = {
 			CLK_SET_RATE_PARENT, 0),
 	GATE(SCLK_MMC3, "sclk_mmc3", "dout_mmc3", CLK_SRC_MASK0, 11,
 			CLK_SET_RATE_PARENT, 0),
+	// 7 muxvpllsrc
 	GATE(SCLK_CSIS, "sclk_csis", "dout_csis", CLK_SRC_MASK0, 6,
 			CLK_SET_RATE_PARENT, 0),
 	GATE(SCLK_DAC, "sclk_dac", "mout_dac", CLK_SRC_MASK0, 2,
@@ -711,16 +718,26 @@ static const struct samsung_clock_alias s5pv210_aliases[] __initconst = {
 	ALIAS(MOUT_DMC0, NULL, "sclk_dmc0"),
 };
 
+static const struct samsung_pll_rate_table s5pv210_epll_rates[] __initconst = {
+	PLL_4600_RATE(		 24 * MHZ,  80000000, 80, 3, 3,     0, 1),
+	{ /* sentinel */ }
+};
+
+static const struct samsung_pll_rate_table s5pv210_vpll_rates[] __initconst = {
+	PLL_4502_RATE(24 * MHZ,  54000000, 108,  6, 3, 0),
+	{ /* sentinel */ }
+};
+
 /* S5PV210-specific PLLs. */
 static const struct samsung_pll_clock s5pv210_pll_clks[] __initconst = {
-	[apll] = PLL(pll_4508, FOUT_APLL, "fout_apll", "fin_pll",
+	[apll] = PLL(pll_s5pv210_apll, FOUT_APLL, "fout_apll", "fin_pll",
 						APLL_LOCK, APLL_CON0, NULL),
-	[mpll] = PLL(pll_4502, FOUT_MPLL, "fout_mpll", "fin_pll",
+	[mpll] = PLL(pll_s5pv210_mpll, FOUT_MPLL, "fout_mpll", "fin_pll",
 						MPLL_LOCK, MPLL_CON, NULL),
-	[epll] = PLL(pll_4600, FOUT_EPLL, "fout_epll", "fin_pll",
-						EPLL_LOCK, EPLL_CON0, NULL),
-	[vpll] = PLL(pll_4502, FOUT_VPLL, "fout_vpll", "mout_vpllsrc",
-						VPLL_LOCK, VPLL_CON, NULL),
+	[epll] = PLL(pll_s5pv210_epll, FOUT_EPLL, "fout_epll", "fin_pll",
+						EPLL_LOCK, EPLL_CON0, s5pv210_epll_rates),
+	[vpll] = PLL(pll_s5pv210_vpll, FOUT_VPLL, "fout_vpll", "mout_vpllsrc",
+						VPLL_LOCK, VPLL_CON, s5pv210_vpll_rates),
 };
 
 /* S5P6442-specific PLLs. */

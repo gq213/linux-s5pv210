@@ -174,9 +174,10 @@ struct clk_hw *__clk_hw_register_mux(struct device *dev, struct device_node *np,
 		return ERR_PTR(-ENOMEM);
 
 	init.name = name;
-	if (clk_mux_flags & CLK_MUX_READ_ONLY)
+	if (clk_mux_flags & CLK_MUX_READ_ONLY) {
+		pr_info("CLK_MUX_READ_ONLY: name=%s\n", name);
 		init.ops = &clk_mux_ro_ops;
-	else
+	} else
 		init.ops = &clk_mux_ops;
 	init.flags = flags;
 	init.parent_names = parent_names;

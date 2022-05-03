@@ -1,0 +1,426 @@
+OK
+c_main
+load kernel...
+image_size=0x0059D400bytes, 0x00002CEAlba
+done.
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 5.17.5+ (qiang@vm) (arm-linux-gnueabihf-gcc (Linaro GCC 6.3-2017.05) 6.3.1 20170404, GNU ld (Linaro_Binutils-2017.05) 2.27.0.20161019) #6 PREEMPT Tue May 3 09:22:04 CST 2022
+[    0.000000] CPU: ARMv7 Processor [412fc082] revision 2 (ARMv7), cr=10c5387d
+[    0.000000] CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache
+[    0.000000] OF: fdt: Machine model: sate210 based on S5PV210
+[    0.000000] printk: debug: ignoring loglevel setting.
+[    0.000000] printk: bootconsole [earlycon0] enabled
+[    0.000000] Memory policy: Data cache writeback
+[    0.000000] Zone ranges:
+[    0.000000]   Normal   [mem 0x0000000020000000-0x000000004fffffff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000020000000-0x000000002fffffff]
+[    0.000000]   node   0: [mem 0x0000000040000000-0x000000004fffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000020000000-0x000000004fffffff]
+[    0.000000] CPU: All CPU(s) started in SVC mode.
+[    0.000000] pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+[    0.000000] pcpu-alloc: [0] 0 
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 129536
+[    0.000000] Kernel command line: console=ttySAC1 noinitrd root=/dev/mmcblk0p1 rw rootfstype=ext4 rootwait init=/linuxrc ignore_loglevel earlyprintk
+[    0.000000] Dentry cache hash table entries: 65536 (order: 6, 262144 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 32768 (order: 5, 131072 bytes, linear)
+[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+[    0.000000] Memory: 504656K/524288K available (3072K kernel code, 506K rwdata, 532K rodata, 10240K init, 187K bss, 19632K reserved, 0K cma-reserved)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[    0.000000] rcu: Preemptible hierarchical RCU implementation.
+[    0.000000] rcu:     RCU event tracing is enabled.
+[    0.000000]  Trampoline variant of Tasks RCU enabled.
+[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 10 jiffies.
+[    0.000000] NR_IRQS: 16, nr_irqs: 16, preallocated irqs: 16
+[    0.000000] VIC @(ptrval): id 0x00041192, vendor 0x41
+[    0.000000] VIC @(ptrval): id 0x00041192, vendor 0x41
+[    0.000000] VIC @(ptrval): id 0x00041192, vendor 0x41
+[    0.000000] VIC @(ptrval): id 0x00041192, vendor 0x41
+[    0.000000] random: get_random_bytes called from start_kernel+0x49c/0x634 with crng_init=0
+[    0.000000] CLK_MUX_READ_ONLY: name=fin_pll
+[    0.000000] s5pv210_apll_recalc_rate: fout_apll, parent_rate=24000000, fvco=1000000000
+[    0.000000] s5pv210_mpll_recalc_rate: fout_mpll, parent_rate=24000000, fvco=667000000
+[    0.000000] s5pv210_epll_recalc_rate: fout_epll, parent_rate=24000000, fvco=80000000
+[    0.000000] s5pv210_vpll_recalc_rate: fout_vpll, parent_rate=0, fvco=0
+[    0.000000] s5pv210_vpll_recalc_rate: fout_vpll, parent_rate=24000000, fvco=54000000
+[    0.000000] S5PV210 clocks: mout_apll = 1000000000, mout_mpll = 667000000
+[    0.000000]  mout_epll = 80000000, mout_vpll = 54000000
+[    0.000002] sched_clock: 32 bits at 33MHz, resolution 29ns, wraps every 64392313329ns
+[    0.007660] clocksource: samsung_clocksource_timer: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 57309158834 ns
+[    0.018513] Console: colour dummy device 80x30
+[    0.022849] Calibrating delay loop... 996.14 BogoMIPS (lpj=4980736)
+[    0.066116] pid_max: default: 32768 minimum: 301
+[    0.070768] Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.077911] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.086049] CPU: Testing write buffer coherency: ok
+[    0.090840] CPU0: Spectre v2: firmware did not set auxiliary control register IBE bit, system vulnerable
+[    0.100690] cblist_init_generic: Setting adjustable number of callback queues.
+[    0.107743] cblist_init_generic: Setting shift to 0 and lim to 1.
+[    0.113878] Setting up static identity map for 0x20100000 - 0x2010003c
+[    0.120367] rcu: Hierarchical SRCU implementation.
+[    0.125354] devtmpfs: initialized
+[    0.130930] VFP support v0.3: implementor 41 architecture 3 part 30 variant c rev 2
+[    0.138493] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+[    0.148141] futex hash table entries: 256 (order: 0, 7168 bytes, linear)
+[    0.154807] pinctrl core: initialized pinctrl subsystem
+[    0.160871] DMA: preallocated 256 KiB pool for atomic coherent allocations
+[    0.183398] clocksource: Switched to clocksource samsung_clocksource_timer
+[    0.195783] workingset: timestamp_bits=30 max_order=17 bucket_order=0
+[    0.223871] io scheduler mq-deadline registered
+[    0.228277] io scheduler kyber registered
+[    0.247379] dma-pl330 e0900000.dma: Loaded driver for PL330 DMAC-41330
+[    0.263617] dma-pl330 e0900000.dma:  DBUFF-8x4bytes Num_Chans-8 Num_Peri-32 Num_Events-32
+[    0.273265] dma-pl330 e0a00000.dma: Loaded driver for PL330 DMAC-41330
+[    0.293650] dma-pl330 e0a00000.dma:  DBUFF-8x4bytes Num_Chans-8 Num_Peri-32 Num_Events-32
+[    0.302371] dma-pl330 fa200000.mdma: Loaded driver for PL330 DMAC-41330
+[    0.313490] dma-pl330 fa200000.mdma:         DBUFF-64x8bytes Num_Chans-8 Num_Peri-2 Num_Events-32
+[    0.325636] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+[    0.332817] e2900000.serial: ttySAC0 at MMIO 0xe2900000 (irq = 58, base_baud = 0) is a S3C6400/10
+[    0.341993] e2900400.serial: ttySAC1 at MMIO 0xe2900400 (irq = 59, base_baud = 0) is a S3C6400/10
+[    0.350674] printk: console [ttySAC1] enabled
+[    0.350674] printk: console [ttySAC1] enabled
+[    0.359003] printk: bootconsole [earlycon0] disabled
+[    0.359003] printk: bootconsole [earlycon0] disabled
+[    0.368925] e2900800.serial: ttySAC2 at MMIO 0xe2900800 (irq = 60, base_baud = 0) is a S3C6400/10
+[    0.372370] e2900c00.serial: ttySAC3 at MMIO 0xe2900c00 (irq = 61, base_baud = 0) is a S3C6400/10
+[    0.395880] clk_disable_unused_subtree: sclk_hdmi
+[    0.395959] clk_disable_unused_subtree: sclk_dac
+[    0.399447] clk_disable_unused_subtree: sclk_mixer
+[    0.404102] clk_disable_unused_subtree: sclk_mmc3
+[    0.408600] clk_disable_unused_subtree: sclk_mmc2
+[    0.413133] clk_disable_unused_subtree: sclk_mmc1
+[    0.417680] clk_disable_unused_subtree: sclk_mmc0
+[    0.422202] clk_disable_unused_subtree: sclk_uart3
+[    0.426830] clk_disable_unused_subtree: sclk_uart2
+[    0.431436] clk_disable_unused_subtree: sclk_uart1
+[    0.436065] clk_disable_unused_subtree: sclk_uart0
+[    0.440674] clk_disable_unused_subtree: secss
+[    0.444879] clk_disable_unused_subtree: modemif
+[    0.449234] clk_disable_unused_subtree: hsmmc0
+[    0.453527] clk_disable_unused_subtree: hsmmc1
+[    0.457798] clk_disable_unused_subtree: hsmmc2
+[    0.462079] clk_disable_unused_subtree: usb_otg
+[    0.466457] clk_disable_unused_subtree: nandxl
+[    0.470727] clk_disable_unused_subtree: sromc
+[    0.474937] clk_disable_unused_subtree: chipid
+[    0.479207] clk_disable_unused_subtree: seckey
+[    0.483500] clk_disable_unused_subtree: i2s0
+[    0.487603] clk_disable_unused_subtree: i2s1
+[    0.491716] clk_disable_unused_subtree: i2c0
+[    0.495842] clk_disable_unused_subtree: i2c2
+[    0.499945] clk_disable_unused_subtree: spi0
+[    0.504070] clk_disable_unused_subtree: rtc
+[    0.508088] clk_disable_unused_subtree: systimer
+[    0.512540] clk_disable_unused_subtree: keyif
+[    0.516748] clk_disable_unused_subtree: watchdog
+[    0.521186] clk_disable_unused_subtree: tsadc
+[    0.525395] clk_disable_unused_subtree: pcm0
+[    0.529497] clk_disable_unused_subtree: pcm1
+[    0.533624] clk_disable_unused_subtree: coresight
+[    0.538146] clk_disable_unused_subtree: pcm2
+[    0.542260] clk_disable_unused_subtree: spi1
+[    0.546385] clk_disable_unused_subtree: i2s2
+[    0.550487] clk_disable_unused_subtree: ac97
+[    0.554613] clk_disable_unused_subtree: spdif
+[    0.558799] clk_disable_unused_subtree: tzpc.1
+[    0.563081] clk_disable_unused_subtree: iem_apc
+[    0.567458] clk_disable_unused_subtree: iem_iec
+[    0.571813] clk_disable_unused_subtree: jtag
+[    0.575937] clk_disable_unused_subtree: hsmmc3
+[    0.580208] clk_disable_unused_subtree: usb_host
+[    0.584669] clk_disable_unused_subtree: cfcon
+[    0.588856] clk_disable_unused_subtree: nfcon
+[    0.593055] clk_disable_unused_subtree: fimd
+[    0.597179] clk_disable_unused_subtree: vp
+[    0.601114] clk_disable_unused_subtree: mixer
+[    0.605323] clk_disable_unused_subtree: tvenc
+[    0.609510] clk_disable_unused_subtree: fimc0
+[    0.613719] clk_disable_unused_subtree: fimc1
+[    0.617906] clk_disable_unused_subtree: fimc2
+[    0.622103] clk_disable_unused_subtree: rotator
+[    0.626481] clk_disable_unused_subtree: dsim
+[    0.630583] clk_disable_unused_subtree: i2c_hdmi_phy
+[    0.635382] clk_disable_unused_subtree: i2c1
+[    0.639483] clk_disable_unused_subtree: tzpc.3
+[    0.643776] clk_disable_unused_subtree: tzpc.2
+[    0.648048] clk_disable_unused_subtree: jpeg
+[    0.652160] clk_disable_unused_subtree: tsi
+[    0.656201] clk_disable_unused_subtree: hdmi
+[    0.660304] clk_disable_unused_subtree: g2d
+[    0.664345] clk_disable_unused_subtree: clk_csis
+[    0.668793] clk_disable_unused_subtree: tzic0
+[    0.672982] clk_disable_unused_subtree: tzic1
+[    0.677191] clk_disable_unused_subtree: tzic2
+[    0.681378] clk_disable_unused_subtree: tzic3
+[    0.685587] clk_disable_unused_subtree: imem
+[    0.689690] clk_disable_unused_subtree: g3d
+[    0.693765] clk_disable_unused_subtree: mfc
+[    0.697750] clk_disable_unused_subtree: tzpc.0
+[    0.702032] clk_disable_unused_subtree: sdm
+[    0.706080] clk_disable_unused_subtree: i2s_audss
+[    0.710597] clk_disable_unused_subtree: sclk_audio0
+[    0.715309] clk_disable_unused_subtree: sclk_spdif
+[    0.719916] clk_disable_unused_subtree: sclk_spi0
+[    0.724461] clk_disable_unused_subtree: sclk_spi1
+[    0.728983] clk_disable_unused_subtree: sclk_pwm
+[    0.733444] clk_disable_unused_subtree: sclk_fimc0
+[    0.738050] clk_disable_unused_subtree: sclk_fimc1
+[    0.742667] clk_disable_unused_subtree: sclk_fimc2
+[    0.747297] clk_disable_unused_subtree: sclk_cam0
+[    0.751820] clk_disable_unused_subtree: sclk_cam1
+[    0.756364] clk_disable_unused_subtree: sclk_fimd
+[    0.760887] clk_disable_unused_subtree: sclk_csis
+[    0.765432] clk_disable_unused_subtree: sclk_audio1
+[    0.770122] clk_disable_unused_subtree: sclk_audio2
+[    0.787568] Freeing unused kernel image (initmem) memory: 10240K
+[    0.788098] Run /init as init process
+[    0.791454]   with arguments:
+[    0.794331]     /init
+[    0.796491]   with environment:
+[    0.799514]     HOME=/
+[    0.801780]     TERM=linux
+
+Please press Enter to activate this console. 
+[root@buildroot /]# cat /sys/kernel/[   43.568515] random: fast init done
+[root@buildroot /]# cat /sys/kernel/debug/clk/clk_summary 
+[   53.645236] s5pv210_vpll_recalc_rate: fout_vpll, parent_rate=24000000, fvco=54000000
+[   53.647332] s5pv210_epll_recalc_rate: fout_epll, parent_rate=24000000, fvco=80000000
+[   53.654889] s5pv210_mpll_recalc_rate: fout_mpll, parent_rate=24000000, fvco=667000000
+[   53.662451] s5pv210_apll_recalc_rate: fout_apll, parent_rate=24000000, fvco=1000000000
+[   53.670112] s5pv210_vpll_recalc_rate: fout_vpll, parent_rate=24000000, fvco=54000000
+[   53.677481] s5pv210_epll_recalc_rate: fout_epll, parent_rate=24000000, fvco=80000000
+[   53.684972] s5pv210_mpll_recalc_rate: fout_mpll, parent_rate=24000000, fvco=667000000
+[   53.692710] s5pv210_apll_recalc_rate: fout_apll, parent_rate=24000000, fvco=1000000000
+[   53.700190] s5pv210_vpll_recalc_rate: fout_vpll, parent_rate=24000000, fvco=54000000
+[   53.707619] s5pv210_epll_recalc_rate: fout_epll, parent_rate=24000000, fvco=80000000
+[   53.715111] s5pv210_mpll_recalc_rate: fout_mpll, parent_rate=24000000, fvco=667000000
+[   53.723039] s5pv210_apll_recalc_rate: fout_apll, parent_rate=24000000, fvco=1000000000
+[   53.730460] s5pv210_vpll_recalc_rate: fout_vpll, parent_rate=24000000, fvco=54000000
+[   53.737782] s5pv210_epll_recalc_rate: fout_epll, parent_rate=24000000, fvco=80000000
+[   53.745255] s5pv210_mpll_recalc_rate: fout_mpll, parent_rate=24000000, fvco=667000000
+[   53.753181] s5pv210_apll_recalc_rate: fout_apll, parent_rate=24000000, fvco=1000000000
+                                 enable  prepare  protect                                duty  hardware
+   clock                          count    count    count        rate   accuracy phase  cycle    enable
+-------------------------------------------------------------------------------------------------------
+ sclk_usbphy1                         0        0        0    48000000          0     0  50000         Y
+ sclk_usbphy0                         0        0        0    48000000          0     0  50000         Y
+ sclk_hdmiphy                         0        0        0    27000000          0     0  50000         Y
+ sclk_hdmi27m                         0        0        0    27000000          0     0  50000         Y
+ xusbxti                              1        1        0    24000000          0     0  50000         Y
+    fin_pll                           1        1        0    24000000          0     0  50000         Y
+       mout_vpllsrc                   0        0        0    24000000          0     0  50000         Y
+          fout_vpll                   0        0        0    54000000          0     0  50000         Y
+             mout_vpll                0        0        0    54000000          0     0  50000         Y
+                dout_tblk             0        0        0    54000000          0     0  50000         Y
+                   mout_hdmi          0        0        0    54000000          0     0  50000         Y
+                      sclk_hdmi       0        0        0    54000000          0     0  50000         N
+                mout_dac              0        0        0    54000000          0     0  50000         Y
+                   sclk_dac           0        0        0    54000000          0     0  50000         N
+                   mout_mixer         0        0        0    54000000          0     0  50000         Y
+                      sclk_mixer       0        0        0    54000000          0     0  50000         N
+       fout_epll                      0        0        0    80000000          0     0  50000         Y
+          mout_epll                   0        0        0    80000000          0     0  50000         Y
+             mout_mmc3                0        0        0    80000000          0     0  50000         Y
+                dout_mmc3             0        0        0    80000000          0     0  50000         Y
+                   sclk_mmc3          0        0        0    80000000          0     0  50000         N
+             mout_mmc2                0        0        0    80000000          0     0  50000         Y
+                dout_mmc2             0        0        0    80000000          0     0  50000         Y
+                   sclk_mmc2          0        0        0    80000000          0     0  50000         N
+             mout_mmc1                0        0        0    80000000          0     0  50000         Y
+                dout_mmc1             0        0        0    80000000          0     0  50000         Y
+                   sclk_mmc1          0        0        0    80000000          0     0  50000         N
+             mout_mmc0                0        0        0    80000000          0     0  50000         Y
+                dout_mmc0             0        0        0    80000000          0     0  50000         Y
+                   sclk_mmc0          0        0        0    80000000          0     0  50000         N
+       fout_mpll                      1        1        0   667000000          0     0  50000         Y
+          fout_mpll_clkout            0        0        0   333500000          0     0  50000         Y
+          mout_mpll                   2        2        0   667000000          0     0  50000         Y
+             mout_uart3               0        0        0   667000000          0     0  50000         Y
+                dout_uart3            0        0        0    66700000          0     0  50000         Y
+                   sclk_uart3         0        0        0    66700000          0     0  50000         N
+             mout_uart2               0        0        0   667000000          0     0  50000         Y
+                dout_uart2            0        0        0    66700000          0     0  50000         Y
+                   sclk_uart2         0        0        0    66700000          0     0  50000         N
+             mout_uart1               0        0        0   667000000          0     0  50000         Y
+                dout_uart1            0        0        0    66700000          0     0  50000         Y
+                   sclk_uart1         0        0        0    66700000          0     0  50000         N
+             mout_uart0               0        0        0   667000000          0     0  50000         Y
+                dout_uart0            0        0        0    66700000          0     0  50000         Y
+                   sclk_uart0         0        0        0    66700000          0     0  50000         N
+             mout_psys                1        1        0   667000000          0     0  50000         Y
+                dout_hclkp            3        3        0   133400000          0     0  50000         Y
+                   hclk_rp_audss       0        0        0   133400000          0     0  50000         Y
+                   hclk_buf_audss       0        0        0   133400000          0     0  50000         Y
+                   hclk_dma_audss       0        0        0   133400000          0     0  50000         Y
+                   hclk_hwa_audss       0        0        0   133400000          0     0  50000         Y
+                   hclk_uart_audss       0        0        0   133400000          0     0  50000         Y
+                   hclk_i2s_audss       0        0        0   133400000          0     0  50000         Y
+                   secss              0        0        0   133400000          0     0  50000         N
+                   modemif            0        0        0   133400000          0     0  50000         N
+                   hsmmc0             0        0        0   133400000          0     0  50000         N
+                   hsmmc1             0        0        0   133400000          0     0  50000         N
+                   hsmmc2             0        0        0   133400000          0     0  50000         N
+                   usb_otg            0        0        0   133400000          0     0  50000         N
+                   nandxl             0        0        0   133400000          0     0  50000         N
+                   sromc              0        0        0   133400000          0     0  50000         N
+                   pdma0              1        1        0   133400000          0     0  50000         Y
+                   dout_pclkp         2        2        0    66700000          0     0  50000         Y
+                      chipid          0        0        0    66700000          0     0  50000         N
+                      seckey          0        0        0    66700000          0     0  50000         N
+                      i2s0            0        0        0    66700000          0     0  50000         N
+                      i2s1            0        0        0    66700000          0     0  50000         N
+                      i2c0            0        0        0    66700000          0     0  50000         N
+                      i2c2            0        0        0    66700000          0     0  50000         N
+                      spi0            0        0        0    66700000          0     0  50000         N
+                      rtc             0        0        0    66700000          0     0  50000         N
+                      systimer        0        0        0    66700000          0     0  50000         N
+                      uart0           0        0        0    66700000          0     0  50000         N
+                      uart1           2        2        0    66700000          0     0  50000         Y
+                      uart2           0        0        0    66700000          0     0  50000         N
+                      keyif           0        0        0    66700000          0     0  50000         N
+                      watchdog        0        0        0    66700000          0     0  50000         N
+                      pwm             1        1        0    66700000          0     0  50000         Y
+                      tsadc           0        0        0    66700000          0     0  50000         N
+                      pcm0            0        0        0    66700000          0     0  50000         N
+                      pcm1            0        0        0    66700000          0     0  50000         N
+                      dout_dpm        0        0        0    66700000          0     0  50000         Y
+                      dout_dvsem       0        0        0    66700000          0     0  50000         Y
+                      coresight       0        0        0    66700000          0     0  50000         N
+                      pcm2            0        0        0    66700000          0     0  50000         N
+                      uart3           0        0        0    66700000          0     0  50000         N
+                      spi1            0        0        0    66700000          0     0  50000         N
+                      i2s2            0        0        0    66700000          0     0  50000         N
+                      ac97            0        0        0    66700000          0     0  50000         N
+                      spdif           0        0        0    66700000          0     0  50000         N
+                      tzpc.1          0        0        0    66700000          0     0  50000         N
+                      iem_apc         0        0        0    66700000          0     0  50000         N
+                      iem_iec         0        0        0    66700000          0     0  50000         N
+                   jtag               0        0        0   133400000          0     0  50000         N
+                   hsmmc3             0        0        0   133400000          0     0  50000         N
+                   usb_host           0        0        0   133400000          0     0  50000         N
+                   cfcon              0        0        0   133400000          0     0  50000         N
+                   nfcon              0        0        0   133400000          0     0  50000         N
+                   pdma1              1        1        0   133400000          0     0  50000         Y
+             mout_dsys                1        1        0   667000000          0     0  50000         Y
+                dout_hclkd            1        1        0   166750000          0     0  50000         Y
+                   fimd               0        0        0   166750000          0     0  50000         N
+                   vp                 0        0        0   166750000          0     0  50000         N
+                   mixer              0        0        0   166750000          0     0  50000         N
+                   tvenc              0        0        0   166750000          0     0  50000         N
+                   mdma               1        1        0   166750000          0     0  50000         Y
+                   fimc0              0        0        0   166750000          0     0  50000         N
+                   fimc1              0        0        0   166750000          0     0  50000         N
+                   fimc2              0        0        0   166750000          0     0  50000         N
+                   rotator            0        0        0   166750000          0     0  50000         N
+                   dout_pclkd         0        0        0    83375000          0     0  50000         Y
+                      dsim            0        0        0    83375000          0     0  50000         N
+                      i2c_hdmi_phy       0        0        0    83375000          0     0  50000         N
+                      i2c1            0        0        0    83375000          0     0  50000         N
+                      tzpc.3          0        0        0    83375000          0     0  50000         N
+                      tzpc.2          0        0        0    83375000          0     0  50000         N
+                   mout_flash         0        0        0   166750000          0     0  50000         Y
+                      dout_flash       0        0        0   166750000          0     0  50000         Y
+                   jpeg               0        0        0   166750000          0     0  50000         N
+                   tsi                0        0        0   166750000          0     0  50000         N
+                   hdmi               0        0        0   166750000          0     0  50000         N
+                   g2d                0        0        0   166750000          0     0  50000         N
+                   clk_csis           0        0        0   166750000          0     0  50000         N
+       fout_apll                      0        0        0  1000000000          0     0  50000         Y
+          fout_apll_clkout            0        0        0   250000000          0     0  50000         Y
+             mout_clksel              0        0        0   250000000          0     0  50000         Y
+                dout_clkout           0        0        0    25000000          0     0  50000         Y
+                   mout_clkout        0        0        0    25000000          0     0  50000         Y
+          mout_apll                   0        0        0  1000000000          0     0  50000         Y
+             dout_a2m                 0        0        0   200000000          0     0  50000         Y
+                mout_g2d              0        0        0   200000000          0     0  50000         Y
+                   dout_g2d           0        0        0   200000000          0     0  50000         Y
+                mout_mfc              0        0        0   200000000          0     0  50000         Y
+                   dout_mfc           0        0        0   200000000          0     0  50000         Y
+                mout_g3d              0        0        0   200000000          0     0  50000         Y
+                   dout_g3d           0        0        0   200000000          0     0  50000         Y
+                mout_dmc0             0        0        0   200000000          0     0  50000         Y
+                   dout_dmc0          0        0        0   200000000          0     0  50000         Y
+             mout_hpm                 0        0        0  1000000000          0     0  50000         Y
+                dout_copy             0        0        0   125000000          0     0  50000         Y
+                   dout_hpm           0        0        0   125000000          0     0  50000         Y
+             mout_msys                0        0        0  1000000000          0     0  50000         Y
+                dout_apll             0        0        0  1000000000          0     0  50000         Y
+                   dout_apll_clkout       0        0        0   250000000          0     0  50000         Y
+                   dout_hclkm         0        0        0   200000000          0     0  50000         Y
+                      tzic0           0        0        0   200000000          0     0  50000         N
+                      tzic1           0        0        0   200000000          0     0  50000         N
+                      tzic2           0        0        0   200000000          0     0  50000         N
+                      tzic3           0        0        0   200000000          0     0  50000         N
+                      imem            0        0        0   200000000          0     0  50000         N
+                      g3d             0        0        0   200000000          0     0  50000         N
+                      mfc             0        0        0   200000000          0     0  50000         N
+                      dout_pclkm       0        0        0   100000000          0     0  50000         Y
+                         tzpc.0       0        0        0   100000000          0     0  50000         N
+                         sdm          0        0        0   100000000          0     0  50000         N
+ xxti                                 0        0        0           0          0     0  50000         Y
+    mout_audss                        0        0        0           0          0     0  50000         Y
+       dout_aud_bus                   0        0        0           0          0     0  50000         Y
+       mout_i2s_audss                 0        0        0           0          0     0  50000         Y
+          dout_i2s_audss              0        0        0           0          0     0  50000         Y
+             i2s_audss                0        0        0           0          0     0  50000         N
+    mout_audio0                       0        0        0           0          0     0  50000         Y
+       dout_audio0                    0        0        0           0          0     0  50000         Y
+          sclk_audio0                 0        0        0           0          0     0  50000         N
+          mout_spdif                  0        0        0           0          0     0  50000         Y
+             sclk_spdif               0        0        0           0          0     0  50000         N
+    mout_pwi                          0        0        0           0          0     0  50000         Y
+       dout_pwi                       0        0        0           0          0     0  50000         Y
+    mout_spi0                         0        0        0           0          0     0  50000         Y
+       dout_spi0                      0        0        0           0          0     0  50000         Y
+          sclk_spi0                   0        0        0           0          0     0  50000         N
+    mout_spi1                         0        0        0           0          0     0  50000         Y
+       dout_spi1                      0        0        0           0          0     0  50000         Y
+          sclk_spi1                   0        0        0           0          0     0  50000         N
+    mout_pwm                          0        0        0           0          0     0  50000         Y
+       dout_pwm                       0        0        0           0          0     0  50000         Y
+          sclk_pwm                    0        0        0           0          0     0  50000         N
+    mout_fimc0                        0        0        0           0          0     0  50000         Y
+       dout_fimc0                     0        0        0           0          0     0  50000         Y
+          sclk_fimc0                  0        0        0           0          0     0  50000         N
+    mout_fimc1                        0        0        0           0          0     0  50000         Y
+       dout_fimc1                     0        0        0           0          0     0  50000         Y
+          sclk_fimc1                  0        0        0           0          0     0  50000         N
+    mout_fimc2                        0        0        0           0          0     0  50000         Y
+       dout_fimc2                     0        0        0           0          0     0  50000         Y
+          sclk_fimc2                  0        0        0           0          0     0  50000         N
+    mout_cam0                         0        0        0           0          0     0  50000         Y
+       dout_cam0                      0        0        0           0          0     0  50000         Y
+          sclk_cam0                   0        0        0           0          0     0  50000         N
+    mout_cam1                         0        0        0           0          0     0  50000         Y
+       dout_cam1                      0        0        0           0          0     0  50000         Y
+          sclk_cam1                   0        0        0           0          0     0  50000         N
+    mout_fimd                         0        0        0           0          0     0  50000         Y
+       dout_fimd                      0        0        0           0          0     0  50000         Y
+          sclk_fimd                   0        0        0           0          0     0  50000         N
+    mout_csis                         0        0        0           0          0     0  50000         Y
+       dout_csis                      0        0        0           0          0     0  50000         Y
+          sclk_csis                   0        0        0           0          0     0  50000         N
+ mout_audio1                          0        0        0           0          0     0  50000         Y
+    dout_audio1                       0        0        0           0          0     0  50000         Y
+       sclk_audio1                    0        0        0           0          0     0  50000         N
+ mout_audio2                          0        0        0           0          0     0  50000         Y
+    dout_audio2                       0        0        0           0          0     0  50000         Y
+       sclk_audio2                    0        0        0           0          0     0  50000         N
+[root@buildroot /]# cat /proc/iomem 
+20000000-2fffffff : System RAM
+  20008000-204fffff : Kernel code
+  20f00000-20fad75b : Kernel data
+40000000-4fffffff : System RAM
+e0900000-e0900fff : dma@e0900000
+  e0900000-e0900fff : e0900000.dma dma@e0900000
+e0a00000-e0a00fff : dma@e0a00000
+  e0a00000-e0a00fff : e0a00000.dma dma@e0a00000
+e2900000-e29003ff : e2900000.serial serial@e2900000
+e2900400-e29007ff : e2900400.serial serial@e2900400
+e2900800-e2900bff : e2900800.serial serial@e2900800
+e2900c00-e2900fff : e2900c00.serial serial@e2900c00
+eee10000-eee10fff : eee10000.clock-controller clock-controller@eee10000
+fa200000-fa200fff : mdma@fa200000
+  fa200000-fa200fff : fa200000.mdma mdma@fa200000
+[root@buildroot /]#

@@ -1244,6 +1244,7 @@ static void __init clk_unprepare_unused_subtree(struct clk_core *core)
 		return;
 
 	if (clk_core_is_prepared(core)) {
+		pr_info("%s: %s\n", __func__, core->name);
 		trace_clk_unprepare(core);
 		if (core->ops->unprepare_unused)
 			core->ops->unprepare_unused(core->hw);
@@ -1285,6 +1286,7 @@ static void __init clk_disable_unused_subtree(struct clk_core *core)
 	 * back to .disable
 	 */
 	if (clk_core_is_enabled(core)) {
+		pr_info("%s: %s\n", __func__, core->name);
 		trace_clk_disable(core);
 		if (core->ops->disable_unused)
 			core->ops->disable_unused(core->hw);

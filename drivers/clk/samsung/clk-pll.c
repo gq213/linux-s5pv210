@@ -1421,6 +1421,340 @@ static const struct clk_ops samsung_pll2650xx_clk_min_ops = {
 	.recalc_rate = samsung_pll2650xx_recalc_rate,
 };
 
+/*
+ * S5PV210
+ */
+static long s5pv210_round_rate(struct clk_hw *hw,
+			unsigned long drate, unsigned long *prate)
+{
+	struct samsung_clk_pll *pll = to_clk_pll(hw);
+	const struct samsung_pll_rate_table *rate_table = pll->rate_table;
+	int i;
+
+	/* Assumming rate_table is in descending order */
+	for (i = 0; i < pll->rate_count; i++) {
+		if (drate >= rate_table[i].rate)
+			break;
+	}
+
+	/* return minimum supported value */
+	if (i == pll->rate_count) {
+		i -= 1;
+	}
+	
+	pr_info("%s: (%s, drate=%lu), (rate=%d, m=%d, p=%d, s=%d, k=%d, v=%d)\n", 
+			__func__, 
+			clk_hw_get_name(hw), drate, 
+			rate_table[i].rate, 
+			rate_table[i].mdiv, rate_table[i].pdiv, 
+			rate_table[i].sdiv, rate_table[i].kdiv, 
+			rate_table[i].vsel);
+
+	return rate_table[i].rate;
+}
+
+/*
+ * S5PV210_APLL
+ */
+#define S5PV210_APLL_MDIV_MASK	(0x3FF)
+#define S5PV210_APLL_PDIV_MASK	(0x3F)
+#define S5PV210_APLL_SDIV_MASK	(0x7)
+#define S5PV210_APLL_MDIV_SHIFT	(16)
+#define S5PV210_APLL_PDIV_SHIFT	(8)
+#define S5PV210_APLL_SDIV_SHIFT	(0)
+
+static unsigned long s5pv210_apll_recalc_rate(struct clk_hw *hw,
+				unsigned long parent_rate)
+{
+	struct samsung_clk_pll *pll = to_clk_pll(hw);
+	u32 mdiv, pdiv, sdiv, pll_con;
+	u64 fvco = parent_rate;
+
+	pll_con = readl_relaxed(pll->con_reg);
+	mdiv = (pll_con >> S5PV210_APLL_MDIV_SHIFT) & S5PV210_APLL_MDIV_MASK;
+	pdiv = (pll_con >> S5PV210_APLL_PDIV_SHIFT) & S5PV210_APLL_PDIV_MASK;
+	sdiv = (pll_con >> S5PV210_APLL_SDIV_SHIFT) & S5PV210_APLL_SDIV_MASK;
+
+	sdiv = sdiv - 1;
+
+	fvco *= mdiv;
+	do_div(fvco, (pdiv << sdiv));
+	
+	pr_info("%s: %s, parent_rate=%lu, fvco=%lu\n", 
+			__func__,
+			clk_hw_get_name(hw), parent_rate, (unsigned long)fvco);
+
+	return (unsigned long)fvco;
+}
+
+static int s5pv210_apll_set_rate(struct clk_hw *hw, unsigned long drate,
+					unsigned long prate)
+{
+	pr_err("%s: %s, drate=%lu, prate=%lu, not implemented yet\n", 
+			__func__,
+			clk_hw_get_name(hw), drate, prate);
+
+	return -EINVAL;
+}
+
+static const struct clk_ops s5pv210_apll_ops = {
+	.recalc_rate = s5pv210_apll_recalc_rate,
+	.round_rate = s5pv210_round_rate,
+	.set_rate = s5pv210_apll_set_rate,
+};
+
+static const struct clk_ops s5pv210_apll_min_ops = {
+	.recalc_rate = s5pv210_apll_recalc_rate,
+};
+
+/*
+ * S5PV210_MPLL
+ */
+#define S5PV210_MPLL_MDIV_MASK	(0x3FF)
+#define S5PV210_MPLL_PDIV_MASK	(0x3F)
+#define S5PV210_MPLL_SDIV_MASK	(0x7)
+#define S5PV210_MPLL_MDIV_SHIFT	(16)
+#define S5PV210_MPLL_PDIV_SHIFT	(8)
+#define S5PV210_MPLL_SDIV_SHIFT	(0)
+
+static unsigned long s5pv210_mpll_recalc_rate(struct clk_hw *hw,
+				unsigned long parent_rate)
+{
+	struct samsung_clk_pll *pll = to_clk_pll(hw);
+	u32 mdiv, pdiv, sdiv, pll_con;
+	u64 fvco = parent_rate;
+
+	pll_con = readl_relaxed(pll->con_reg);
+	mdiv = (pll_con >> S5PV210_MPLL_MDIV_SHIFT) & S5PV210_MPLL_MDIV_MASK;
+	pdiv = (pll_con >> S5PV210_MPLL_PDIV_SHIFT) & S5PV210_MPLL_PDIV_MASK;
+	sdiv = (pll_con >> S5PV210_MPLL_SDIV_SHIFT) & S5PV210_MPLL_SDIV_MASK;
+
+	fvco *= mdiv;
+	do_div(fvco, (pdiv << sdiv));
+	
+	pr_info("%s: %s, parent_rate=%lu, fvco=%lu\n", 
+			__func__,
+			clk_hw_get_name(hw), parent_rate, (unsigned long)fvco);
+
+	return (unsigned long)fvco;
+}
+
+static int s5pv210_mpll_set_rate(struct clk_hw *hw, unsigned long drate,
+					unsigned long prate)
+{
+	pr_err("%s: %s, drate=%lu, prate=%lu, not implemented yet\n", 
+			__func__,
+			clk_hw_get_name(hw), drate, prate);
+
+	return -EINVAL;
+}
+
+static const struct clk_ops s5pv210_mpll_ops = {
+	.recalc_rate = s5pv210_mpll_recalc_rate,
+	.round_rate = s5pv210_round_rate,
+	.set_rate = s5pv210_mpll_set_rate,
+};
+
+static const struct clk_ops s5pv210_mpll_min_ops = {
+	.recalc_rate = s5pv210_mpll_recalc_rate,
+};
+
+/*
+ * S5PV210_EPLL
+ */
+#define S5PV210_EPLL_MDIV_MASK	(0x1FF)
+#define S5PV210_EPLL_PDIV_MASK	(0x3F)
+#define S5PV210_EPLL_SDIV_MASK	(0x7)
+#define S5PV210_EPLL_MDIV_SHIFT	(16)
+#define S5PV210_EPLL_PDIV_SHIFT	(8)
+#define S5PV210_EPLL_SDIV_SHIFT	(0)
+#define S5PV210_EPLL_K_MASK		(0xFFFF)
+#define S5PV210_EPLL_K_SHIFT	(0)
+
+static unsigned long s5pv210_epll_recalc_rate(struct clk_hw *hw,
+				unsigned long parent_rate)
+{
+	struct samsung_clk_pll *pll = to_clk_pll(hw);
+	u32 mdiv, pdiv, sdiv, k, pll_con, shift;
+	u64 fvco = parent_rate;
+
+	pll_con = readl_relaxed(pll->con_reg);
+	mdiv = (pll_con >> S5PV210_EPLL_MDIV_SHIFT) & S5PV210_EPLL_MDIV_MASK;
+	pdiv = (pll_con >> S5PV210_EPLL_PDIV_SHIFT) & S5PV210_EPLL_PDIV_MASK;
+	sdiv = (pll_con >> S5PV210_EPLL_SDIV_SHIFT) & S5PV210_EPLL_SDIV_MASK;
+
+	pll_con = readl_relaxed(pll->con_reg + 4);
+	k = (pll_con >> S5PV210_EPLL_K_SHIFT) & S5PV210_EPLL_K_MASK;
+	
+	shift = 16;
+	
+	fvco *= (mdiv << shift) + k;
+	do_div(fvco, (pdiv << sdiv));
+	fvco >>= shift;
+	
+	pr_info("%s: %s, parent_rate=%lu, fvco=%lu\n", 
+			__func__,
+			clk_hw_get_name(hw), parent_rate, (unsigned long)fvco);
+
+	return (unsigned long)fvco;
+}
+
+#define S5PV210_EPLL_VSEL_MASK		(0x1)
+#define S5PV210_EPLL_VSEL_SHIFT		(27)
+#define S5PV210_EPLL_LOCK_FACTOR	3000
+#define S5PV210_EPLL_LOCKED			BIT(29)
+
+static int s5pv210_epll_set_rate(struct clk_hw *hw, unsigned long drate,
+					unsigned long prate)
+{
+	struct samsung_clk_pll *pll = to_clk_pll(hw);
+	const struct samsung_pll_rate_table *rate;
+	u32 con0, con1;
+
+	/* Get required rate settings from table */
+	rate = samsung_get_pll_settings(pll, drate);
+	if (!rate) {
+		pr_err("%s: Invalid rate : %lu for pll clk %s\n", __func__,
+			drate, clk_hw_get_name(hw));
+		return -EINVAL;
+	}
+	
+	pr_info("%s: (%s, drate=%lu), (rate=%d, m=%d, p=%d, s=%d, k=%d, v=%d)\n", 
+			__func__, 
+			clk_hw_get_name(hw), drate, 
+			rate->rate, 
+			rate->mdiv, rate->pdiv, 
+			rate->sdiv, rate->kdiv, 
+			rate->vsel);
+
+	con0 = readl_relaxed(pll->con_reg);
+	con1 = readl_relaxed(pll->con_reg + 0x4);
+
+	/* Set PLL PMS and VSEL values. */
+	con0 &= ~((S5PV210_EPLL_VSEL_MASK << S5PV210_EPLL_VSEL_SHIFT) |
+			(S5PV210_EPLL_MDIV_MASK << S5PV210_EPLL_MDIV_SHIFT) |
+			(S5PV210_EPLL_PDIV_MASK << S5PV210_EPLL_PDIV_SHIFT) |
+			(S5PV210_EPLL_SDIV_MASK << S5PV210_EPLL_SDIV_SHIFT));
+	con0 |= (rate->vsel << S5PV210_EPLL_VSEL_SHIFT) |
+			(rate->mdiv << S5PV210_EPLL_MDIV_SHIFT) |
+			(rate->pdiv << S5PV210_EPLL_PDIV_SHIFT) |
+			(rate->sdiv << S5PV210_EPLL_SDIV_SHIFT);
+
+	/* Set PLL K values. */
+	con1 &= ~(S5PV210_EPLL_K_MASK << S5PV210_EPLL_K_SHIFT);
+	con1 |= (rate->kdiv << S5PV210_EPLL_K_SHIFT);
+	
+	writel_relaxed(rate->pdiv * S5PV210_EPLL_LOCK_FACTOR, pll->lock_reg);
+
+	/* Set new configuration. */
+	writel_relaxed(con0, pll->con_reg);
+	writel_relaxed(con1, pll->con_reg + 0x4);
+
+	/* Wait for PLL lock */
+	return samsung_pll_lock_wait(pll, S5PV210_EPLL_LOCKED);
+}
+
+static const struct clk_ops s5pv210_epll_ops = {
+	.recalc_rate = s5pv210_epll_recalc_rate,
+	.round_rate = s5pv210_round_rate,
+	.set_rate = s5pv210_epll_set_rate,
+};
+
+static const struct clk_ops s5pv210_epll_min_ops = {
+	.recalc_rate = s5pv210_epll_recalc_rate,
+};
+
+/*
+ * S5PV210_VPLL
+ */
+#define S5PV210_VPLL_MDIV_MASK	(0x1FF)
+#define S5PV210_VPLL_PDIV_MASK	(0x3F)
+#define S5PV210_VPLL_SDIV_MASK	(0x7)
+#define S5PV210_VPLL_MDIV_SHIFT	(16)
+#define S5PV210_VPLL_PDIV_SHIFT	(8)
+#define S5PV210_VPLL_SDIV_SHIFT	(0)
+
+static unsigned long s5pv210_vpll_recalc_rate(struct clk_hw *hw,
+				unsigned long parent_rate)
+{
+	struct samsung_clk_pll *pll = to_clk_pll(hw);
+	u32 mdiv, pdiv, sdiv, pll_con;
+	u64 fvco = parent_rate;
+
+	pll_con = readl_relaxed(pll->con_reg);
+	mdiv = (pll_con >> S5PV210_VPLL_MDIV_SHIFT) & S5PV210_VPLL_MDIV_MASK;
+	pdiv = (pll_con >> S5PV210_VPLL_PDIV_SHIFT) & S5PV210_VPLL_PDIV_MASK;
+	sdiv = (pll_con >> S5PV210_VPLL_SDIV_SHIFT) & S5PV210_VPLL_SDIV_MASK;
+
+	fvco *= mdiv;
+	do_div(fvco, (pdiv << sdiv));
+	
+	pr_info("%s: %s, parent_rate=%lu, fvco=%lu\n", 
+			__func__,
+			clk_hw_get_name(hw), parent_rate, (unsigned long)fvco);
+
+	return (unsigned long)fvco;
+}
+
+#define S5PV210_VPLL_VSEL_MASK		(0x1)
+#define S5PV210_VPLL_VSEL_SHIFT		(27)
+#define S5PV210_VPLL_LOCK_FACTOR	400
+#define S5PV210_VPLL_LOCKED			BIT(29)
+
+static int s5pv210_vpll_set_rate(struct clk_hw *hw, unsigned long drate,
+					unsigned long prate)
+{
+	struct samsung_clk_pll *pll = to_clk_pll(hw);
+	const struct samsung_pll_rate_table *rate;
+	u32 con0;
+
+	/* Get required rate settings from table */
+	rate = samsung_get_pll_settings(pll, drate);
+	if (!rate) {
+		pr_err("%s: Invalid rate : %lu for pll clk %s\n", __func__,
+			drate, clk_hw_get_name(hw));
+		return -EINVAL;
+	}
+	
+	pr_info("%s: (%s, drate=%lu), (rate=%d, m=%d, p=%d, s=%d, k=%d, v=%d)\n", 
+			__func__, 
+			clk_hw_get_name(hw), drate, 
+			rate->rate, 
+			rate->mdiv, rate->pdiv, 
+			rate->sdiv, rate->kdiv, 
+			rate->vsel);
+
+	con0 = readl_relaxed(pll->con_reg);
+
+	/* Set PLL PMS and VSEL values. */
+	con0 &= ~((S5PV210_VPLL_VSEL_MASK << S5PV210_VPLL_VSEL_SHIFT) |
+			(S5PV210_VPLL_MDIV_MASK << S5PV210_VPLL_MDIV_SHIFT) |
+			(S5PV210_VPLL_PDIV_MASK << S5PV210_VPLL_PDIV_SHIFT) |
+			(S5PV210_VPLL_SDIV_MASK << S5PV210_VPLL_SDIV_SHIFT));
+	con0 |= (rate->vsel << S5PV210_VPLL_VSEL_SHIFT) |
+			(rate->mdiv << S5PV210_VPLL_MDIV_SHIFT) |
+			(rate->pdiv << S5PV210_VPLL_PDIV_SHIFT) |
+			(rate->sdiv << S5PV210_VPLL_SDIV_SHIFT);
+
+	writel_relaxed(rate->pdiv * S5PV210_VPLL_LOCK_FACTOR, pll->lock_reg);
+
+	/* Set new configuration. */
+	writel_relaxed(con0, pll->con_reg);
+
+	/* Wait for PLL lock */
+	return samsung_pll_lock_wait(pll, S5PV210_VPLL_LOCKED);
+}
+
+static const struct clk_ops s5pv210_vpll_ops = {
+	.recalc_rate = s5pv210_vpll_recalc_rate,
+	.round_rate = s5pv210_round_rate,
+	.set_rate = s5pv210_vpll_set_rate,
+};
+
+static const struct clk_ops s5pv210_vpll_min_ops = {
+	.recalc_rate = s5pv210_vpll_recalc_rate,
+};
+
 static void __init _samsung_clk_register_pll(struct samsung_clk_provider *ctx,
 				const struct samsung_pll_clock *pll_clk,
 				void __iomem *base)
@@ -1567,6 +1901,30 @@ static void __init _samsung_clk_register_pll(struct samsung_clk_provider *ctx,
 			init.ops = &samsung_pll2650xx_clk_min_ops;
 		else
 			init.ops = &samsung_pll2650xx_clk_ops;
+		break;
+	case pll_s5pv210_apll:
+		if (!pll->rate_table)
+			init.ops = &s5pv210_apll_min_ops;
+		else
+			init.ops = &s5pv210_apll_ops;
+		break;
+	case pll_s5pv210_mpll:
+		if (!pll->rate_table)
+			init.ops = &s5pv210_mpll_min_ops;
+		else
+			init.ops = &s5pv210_mpll_ops;
+		break;
+	case pll_s5pv210_epll:
+		if (!pll->rate_table)
+			init.ops = &s5pv210_epll_min_ops;
+		else
+			init.ops = &s5pv210_epll_ops;
+		break;
+	case pll_s5pv210_vpll:
+		if (!pll->rate_table)
+			init.ops = &s5pv210_vpll_min_ops;
+		else
+			init.ops = &s5pv210_vpll_ops;
 		break;
 	default:
 		pr_warn("%s: Unknown pll type for pll clk %s\n",
