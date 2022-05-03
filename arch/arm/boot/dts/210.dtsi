@@ -222,6 +222,45 @@
 			status = "disabled";
 		};
 
+		hsotg: hsotg@ec000000 {
+			compatible = "samsung,s3c6400-hsotg";
+			reg = <0xec000000 0x20000>;
+			interrupt-parent = <&vic1>;
+			interrupts = <24>;
+			clocks = <&clocks CLK_USB_OTG>;
+			clock-names = "otg";
+			phy-names = "usb2-phy";
+			phys = <&usbphy 0>;
+			status = "disabled";
+		};
+
+		usbphy: usbphy@ec100000 {
+			compatible = "samsung,s5pv210-usb2-phy";
+			reg = <0xec100000 0x100>;
+			samsung,pmureg-phandle = <&pmu_syscon>;
+			clocks = <&clocks CLK_USB_OTG>, <&xusbxti>;
+			clock-names = "phy", "ref";
+			#phy-cells = <1>;
+			status = "disabled";
+		};
+
+		ehci: ehci@ec200000 {
+			compatible = "samsung,exynos4210-ehci";
+			reg = <0xec200000 0x100>;
+			interrupts = <23>;
+			interrupt-parent = <&vic1>;
+			clocks = <&clocks CLK_USB_HOST>;
+			clock-names = "usbhost";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
+
+			port@0 {
+				reg = <0>;
+				phys = <&usbphy 1>;
+			};
+		};
+
 		vic0: interrupt-controller@f2000000 {
 			compatible = "arm,pl192-vic";
 			interrupt-controller;

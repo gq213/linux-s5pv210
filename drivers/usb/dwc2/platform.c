@@ -117,6 +117,10 @@ static int dwc2_get_dr_mode(struct dwc2_hsotg *hsotg)
 
 		hsotg->dr_mode = mode;
 	}
+	
+	dev_info(hsotg->dev,
+			 "dr_mode is %s\n",
+			mode == USB_DR_MODE_HOST ? "host" : "device");
 
 	return 0;
 }

@@ -51,6 +51,8 @@
 #define S5PV210_URSTCON_PHY1_ALL	BIT(3)
 #define S5PV210_URSTCON_HOST_LINK_ALL	BIT(4)
 
+#define S5PV210_UPHYTUNE		0x24
+
 /* Isolation, configured in the power management unit */
 #define S5PV210_USB_ISOL_OFFSET		0x680c
 #define S5PV210_USB_ISOL_DEVICE		BIT(0)
@@ -69,6 +71,8 @@ enum s5pv210_phy_id {
  */
 static int s5pv210_rate_to_clk(unsigned long rate, u32 *reg)
 {
+	printk(KERN_INFO "%s: rate=%lu\n", __func__, rate);
+	
 	switch (rate) {
 	case 12 * MHZ:
 		*reg = S5PV210_UPHYCLK_PHYFSEL_12MHZ;
@@ -90,6 +94,12 @@ static void s5pv210_isol(struct samsung_usb2_phy_instance *inst, bool on)
 {
 	struct samsung_usb2_phy_driver *drv = inst->drv;
 	u32 mask;
+	
+	if (inst->cfg->id == S5PV210_DEVICE)
+		printk(KERN_INFO "%s: S5PV210_DEVICE, %d\n", __func__, on);
+	
+	if (inst->cfg->id == S5PV210_HOST)
+		printk(KERN_INFO "%s: S5PV210_HOST, %d\n", __func__, on);
 
 	switch (inst->cfg->id) {
 	case S5PV210_DEVICE:
@@ -106,6 +116,79 @@ static void s5pv210_isol(struct samsung_usb2_phy_instance *inst, bool on)
 							mask, on ? 0 : mask);
 }
 
+#define MODIFY_PWR_CTL 1
+
+#if MODIFY_PWR_CTL
+static void s5pv210_phy_pwr_on(struct samsung_usb2_phy_instance *inst)
+{
+	struct samsung_usb2_phy_driver *drv = inst->drv;
+	
+	if (inst->cfg->id == S5PV210_HOST) {
+		printk(KERN_INFO "%s: S5PV210_HOST\n", __func__);
+		
+		writel((readl(drv->reg_phy + S5PV210_UPHYPWR) & ~(0x1<<7) & ~(0x1<<6))
+						| (0x1<<8) | (0x1<<5),
+						drv->reg_phy + S5PV210_UPHYPWR);
+		writel((readl(drv->reg_phy + S5PV210_UPHYCLK) & ~(0x1<<7))
+						| (0x3<<0),
+						drv->reg_phy + S5PV210_UPHYCLK);
+		writel(readl(drv->reg_phy + S5PV210_UPHYRST)
+						| (0x1<<4) | (0x1<<3),
+						drv->reg_phy + S5PV210_UPHYRST);
+		udelay(80);
+		writel(readl(drv->reg_phy + S5PV210_UPHYRST)
+						& ~(0x1<<4) & ~(0x1<<3),
+						drv->reg_phy + S5PV210_UPHYRST);
+	} else if (inst->cfg->id == S5PV210_DEVICE) {
+		printk(KERN_INFO "%s: S5PV210_DEVICE\n", __func__);
+		
+		writel((readl(drv->reg_phy + S5PV210_UPHYPWR) & ~(0x3<<3) & ~(0x1<<0))
+						| (0x1<<5),
+						drv->reg_phy + S5PV210_UPHYPWR);
+		writel((readl(drv->reg_phy + S5PV210_UPHYCLK) & ~(0x5<<2))
+						| (0x3<<0),
+						drv->reg_phy + S5PV210_UPHYCLK);
+		writel((readl(drv->reg_phy + S5PV210_UPHYRST) & ~(0x3<<1))
+						| (0x1<<0),
+						drv->reg_phy + S5PV210_UPHYRST);
+		mdelay(1);
+		writel(readl(drv->reg_phy + S5PV210_UPHYRST)
+						& ~(0x7<<0),
+						drv->reg_phy + S5PV210_UPHYRST);
+		mdelay(1);
+
+		/* rising/falling time */
+		writel(readl(drv->reg_phy + S5PV210_UPHYTUNE)
+						| (0x1<<20),
+						drv->reg_phy + S5PV210_UPHYTUNE);
+
+		/* set DC level as 6 (6%) */
+		writel((readl(drv->reg_phy + S5PV210_UPHYTUNE) & ~(0xf))
+						| (0x1<<2) | (0x1<<1),
+						drv->reg_phy + S5PV210_UPHYTUNE);
+	}
+	udelay(80);
+}
+
+static void s5pv210_phy_pwr_off(struct samsung_usb2_phy_instance *inst)
+{
+	struct samsung_usb2_phy_driver *drv = inst->drv;
+	
+	if (inst->cfg->id == S5PV210_HOST) {
+		printk(KERN_INFO "%s: S5PV210_HOST\n", __func__);
+		
+		writel(readl(drv->reg_phy + S5PV210_UPHYPWR)
+						| (0x1<<7)|(0x1<<6),
+						drv->reg_phy + S5PV210_UPHYPWR);
+	} else if (inst->cfg->id == S5PV210_DEVICE) {
+		printk(KERN_INFO "%s: S5PV210_DEVICE\n", __func__);
+		
+		writel(readl(drv->reg_phy + S5PV210_UPHYPWR)
+						| (0x3<<3),
+						drv->reg_phy + S5PV210_UPHYPWR);
+	}
+}
+#else
 static void s5pv210_phy_pwr(struct samsung_usb2_phy_instance *inst, bool on)
 {
 	struct samsung_usb2_phy_driver *drv = inst->drv;
@@ -149,18 +232,27 @@ static void s5pv210_phy_pwr(struct samsung_usb2_phy_instance *inst, bool on)
 		writel(pwr, drv->reg_phy + S5PV210_UPHYPWR);
 	}
 }
+#endif
 
 static int s5pv210_power_on(struct samsung_usb2_phy_instance *inst)
 {
 	s5pv210_isol(inst, 0);
+	#if MODIFY_PWR_CTL
+	s5pv210_phy_pwr_on(inst);
+	#else
 	s5pv210_phy_pwr(inst, 1);
+	#endif
 
 	return 0;
 }
 
 static int s5pv210_power_off(struct samsung_usb2_phy_instance *inst)
 {
+	#if MODIFY_PWR_CTL
+	s5pv210_phy_pwr_off(inst);
+	#else
 	s5pv210_phy_pwr(inst, 0);
+	#endif
 	s5pv210_isol(inst, 1);
 
 	return 0;

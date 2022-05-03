@@ -95,3 +95,21 @@
 	assigned-clocks = <&clocks MOUT_MMC3>;
 	assigned-clock-parents = <&clocks MOUT_MPLL>;
 };
+
+&hsotg {
+	dr_mode = "peripheral";
+	//total_fifo_size=7808
+	g-rx-fifo-size = <512>;
+	g-np-tx-fifo-size = <512>;
+	g-tx-fifo-size = <768 768 768 512 512 512 512 384 
+					  384 384 384 256 256 256 128>;
+	status = "okay";
+};
+
+&usbphy {
+	status = "okay";
+};
+
+&ehci {
+	status = "okay";
+};
