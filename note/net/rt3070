@@ -1,0 +1,4 @@
+wpa_supplicant -Dnl80211 -iwlan0 -c /etc/wpa_supplicant.conf &;
+ifconfig wlan0 192.168.100.9;
+route add default gw 192.168.100.1;
+echo "nameserver 192.168.100.1" > /tmp/resolv.conf;
