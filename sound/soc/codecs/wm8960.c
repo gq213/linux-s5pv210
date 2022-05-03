@@ -25,6 +25,8 @@
 
 #include "wm8960.h"
 
+#define DEBUG_REG	0
+
 /* R25 - Power 1 */
 #define WM8960_VMID_MASK 0x180
 #define WM8960_VREF      0x40
@@ -186,7 +188,7 @@ static int wm8960_set_deemph(struct snd_soc_component *component)
 		val = 0;
 	}
 
-	dev_dbg(component->dev, "Set deemphasis %d\n", val);
+	dev_info(component->dev, "Set deemphasis %d\n", val);
 
 	return snd_soc_component_update_bits(component, WM8960_DACCTL1,
 				   0x6, val);
@@ -309,6 +311,8 @@ static const struct snd_kcontrol_new wm8960_lin_boost[] = {
 SOC_DAPM_SINGLE("LINPUT2 Switch", WM8960_LINPATH, 6, 1, 0),
 SOC_DAPM_SINGLE("LINPUT3 Switch", WM8960_LINPATH, 7, 1, 0),
 SOC_DAPM_SINGLE("LINPUT1 Switch", WM8960_LINPATH, 8, 1, 0),
+SOC_DAPM_SINGLE("LINPUT2 Virtual SW", 0xffffffff, 0, 1, 0),
+SOC_DAPM_SINGLE("LINPUT3 Virtual SW", 0xffffffff, 0, 1, 0),
 };
 
 static const struct snd_kcontrol_new wm8960_lin[] = {
@@ -319,6 +323,8 @@ static const struct snd_kcontrol_new wm8960_rin_boost[] = {
 SOC_DAPM_SINGLE("RINPUT2 Switch", WM8960_RINPATH, 6, 1, 0),
 SOC_DAPM_SINGLE("RINPUT3 Switch", WM8960_RINPATH, 7, 1, 0),
 SOC_DAPM_SINGLE("RINPUT1 Switch", WM8960_RINPATH, 8, 1, 0),
+SOC_DAPM_SINGLE("RINPUT2 Virtual SW", 0xffffffff, 0, 1, 0),
+SOC_DAPM_SINGLE("RINPUT3 Virtual SW", 0xffffffff, 0, 1, 0),
 };
 
 static const struct snd_kcontrol_new wm8960_rin[] = {
@@ -342,6 +348,17 @@ SOC_DAPM_SINGLE("Left Switch", WM8960_MONOMIX1, 7, 1, 0),
 SOC_DAPM_SINGLE("Right Switch", WM8960_MONOMIX2, 7, 1, 0),
 };
 
+static int set_micb_event(struct snd_soc_dapm_widget *w,
+			   struct snd_kcontrol *kcontrol, int event)
+{
+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+	
+	dev_info(component->dev, "%s: (%s)\n", __func__, 
+			(event == SND_SOC_DAPM_PRE_PMU) ? "pmu" : "pmd");
+
+	return 0;
+}
+
 static const struct snd_soc_dapm_widget wm8960_dapm_widgets[] = {
 SND_SOC_DAPM_INPUT("LINPUT1"),
 SND_SOC_DAPM_INPUT("RINPUT1"),
@@ -350,7 +367,8 @@ SND_SOC_DAPM_INPUT("RINPUT2"),
 SND_SOC_DAPM_INPUT("LINPUT3"),
 SND_SOC_DAPM_INPUT("RINPUT3"),
 
-SND_SOC_DAPM_SUPPLY("MICB", WM8960_POWER1, 1, 0, NULL, 0),
+SND_SOC_DAPM_SUPPLY("MICB", WM8960_POWER1, 1, 0, set_micb_event, 
+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
 
 SND_SOC_DAPM_MIXER("Left Boost Mixer", WM8960_POWER1, 5, 0,
 		   wm8960_lin_boost, ARRAY_SIZE(wm8960_lin_boost)),
@@ -405,6 +423,7 @@ SND_SOC_DAPM_PGA("OUT3 VMID", WM8960_POWER2, 1, 0, NULL, 0),
 };
 
 static const struct snd_soc_dapm_route audio_paths[] = {
+	#if 0
 	{ "Left Boost Mixer", "LINPUT1 Switch", "LINPUT1" },
 	{ "Left Boost Mixer", "LINPUT2 Switch", "LINPUT2" },
 	{ "Left Boost Mixer", "LINPUT3 Switch", "LINPUT3" },
@@ -425,6 +444,19 @@ static const struct snd_soc_dapm_route audio_paths[] = {
 
 	{ "Left ADC", NULL, "Left Input Mixer" },
 	{ "Right ADC", NULL, "Right Input Mixer" },
+	#else
+	{ "Left Boost Mixer", "LINPUT2 Virtual SW", "LINPUT2" },
+	{ "Left Boost Mixer", "LINPUT3 Virtual SW", "LINPUT3" },
+
+	{ "Right Boost Mixer", "RINPUT2 Virtual SW", "RINPUT2" },
+	{ "Right Boost Mixer", "RINPUT3 Virtual SW", "RINPUT3" },
+	
+	{ "Left ADC", NULL, "Left Boost Mixer" },
+	{ "Right ADC", NULL, "Right Boost Mixer" },
+
+	{ "Left ADC", NULL, "MICB" },
+	{ "Right ADC", NULL, "MICB" },
+	#endif
 
 	{ "Left Output Mixer", "LINPUT3 Switch", "LINPUT3" },
 	{ "Left Output Mixer", "Boost Bypass Switch", "Left Boost Mixer" },
@@ -520,6 +552,8 @@ static int wm8960_set_dai_fmt(struct snd_soc_dai *codec_dai,
 {
 	struct snd_soc_component *component = codec_dai->component;
 	u16 iface = 0;
+	
+	dev_info(component->dev, "%s: fmt=0x%08x\n", __func__, fmt);
 
 	/* set master/slave audio interface */
 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
@@ -572,6 +606,46 @@ static int wm8960_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	/* set iface */
 	snd_soc_component_write(component, WM8960_IFACE1, iface);
 	return 0;
+}
+
+static int wm8960_startup(struct snd_pcm_substream *substream,
+	  struct snd_soc_dai *dai)
+{
+	struct snd_soc_component *component = dai->component;
+	
+	dev_info(component->dev, "%s: (%s)\n", __func__, 
+			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ? "play" : "record");
+
+	#if DEBUG_REG
+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+		snd_soc_component_update_bits(component, WM8960_POWER2, BIT(8), BIT(8));	//0x1a	8	DACL
+		snd_soc_component_update_bits(component, WM8960_POWER2, BIT(7), BIT(7));	//0x1a	7	DACR
+	} else {
+		snd_soc_component_update_bits(component, WM8960_POWER1, BIT(3), BIT(3));	//0x19	3	ADCL
+		snd_soc_component_update_bits(component, WM8960_POWER1, BIT(2), BIT(2));	//0x19	2	ADCR
+	}
+	#endif
+
+	return 0;
+}
+
+static void wm8960_shutdown(struct snd_pcm_substream *substream,
+	struct snd_soc_dai *dai)
+{
+	struct snd_soc_component *component = dai->component;
+	
+	dev_info(component->dev, "%s: (%s)\n", __func__, 
+			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ? "play" : "record");
+
+	#if DEBUG_REG
+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+		snd_soc_component_update_bits(component, WM8960_POWER2, BIT(8), 0);			//0x1a	8	DACL
+		snd_soc_component_update_bits(component, WM8960_POWER2, BIT(7), 0);			//0x1a	7	DACR
+	} else {
+		snd_soc_component_update_bits(component, WM8960_POWER1, BIT(3), 0);			//0x19	3	ADCL
+		snd_soc_component_update_bits(component, WM8960_POWER1, BIT(2), 0);			//0x19	2	ADCR
+	}
+	#endif
 }
 
 static struct {
@@ -818,6 +892,10 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
 	u16 iface = snd_soc_component_read(component, WM8960_IFACE1) & 0xfff3;
 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
 	int i;
+	
+	dev_info(component->dev, "%s: (%s) channels=%u, width=%u, rate=%u\n", __func__, 
+			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ? "play" : "record",
+			params_channels(params), params_width(params), params_rate(params));
 
 	wm8960->bclk = snd_soc_params_to_bclk(params);
 	if (params_channels(params) == 1)
@@ -875,6 +953,9 @@ static int wm8960_hw_free(struct snd_pcm_substream *substream,
 	struct snd_soc_component *component = dai->component;
 	struct wm8960_priv *wm8960 = snd_soc_component_get_drvdata(component);
 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+	
+	dev_info(component->dev, "%s: (%s)\n", __func__, 
+			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ? "play" : "record");
 
 	wm8960->is_stream_in_use[tx] = false;
 
@@ -885,6 +966,8 @@ static int wm8960_mute(struct snd_soc_dai *dai, int mute, int direction)
 {
 	struct snd_soc_component *component = dai->component;
 
+	dev_info(component->dev, "%s: mute=%d\n", __func__, mute);
+
 	if (mute)
 		snd_soc_component_update_bits(component, WM8960_DACCTL1, 0x8, 0x8);
 	else
@@ -892,12 +975,22 @@ static int wm8960_mute(struct snd_soc_dai *dai, int mute, int direction)
 	return 0;
 }
 
+static const char *bias[] = {
+	"off",
+	"standby",
+	"prepare",
+	"on",
+};
+
 static int wm8960_set_bias_level_out3(struct snd_soc_component *component,
 				      enum snd_soc_bias_level level)
 {
 	struct wm8960_priv *wm8960 = snd_soc_component_get_drvdata(component);
 	u16 pm2 = snd_soc_component_read(component, WM8960_POWER2);
 	int ret;
+
+	dev_info(component->dev, "%s: %s -> %s\n", __func__,
+			bias[snd_soc_component_get_bias_level(component)], bias[level]);
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
@@ -988,6 +1081,9 @@ static int wm8960_set_bias_level_capless(struct snd_soc_component *component,
 	struct wm8960_priv *wm8960 = snd_soc_component_get_drvdata(component);
 	u16 pm2 = snd_soc_component_read(component, WM8960_POWER2);
 	int reg, ret;
+
+	dev_info(component->dev, "%s: %s -> %s\n", __func__,
+			bias[snd_soc_component_get_bias_level(component)], bias[level]);
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
@@ -1232,6 +1328,9 @@ static int wm8960_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
 	struct snd_soc_component *component = codec_dai->component;
 	struct wm8960_priv *wm8960 = snd_soc_component_get_drvdata(component);
 
+	dev_info(component->dev, "%s: pll_id=%d, freq_in=%u, freq_out=%u\n", __func__, 
+			pll_id, freq_in, freq_out);
+
 	wm8960->freq_in = freq_in;
 
 	if (pll_id == WM8960_SYSCLK_AUTO)
@@ -1245,6 +1344,8 @@ static int wm8960_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
 {
 	struct snd_soc_component *component = codec_dai->component;
 	u16 reg;
+
+	dev_info(component->dev, "%s: div_id=%d, div=%d\n", __func__, div_id, div);
 
 	switch (div_id) {
 	case WM8960_SYSCLKDIV:
@@ -1288,6 +1389,8 @@ static int wm8960_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
 	struct snd_soc_component *component = dai->component;
 	struct wm8960_priv *wm8960 = snd_soc_component_get_drvdata(component);
 
+	dev_info(component->dev, "%s: clk_id=%d, freq=%u, dir=%d\n", __func__, clk_id, freq, dir);
+
 	switch (clk_id) {
 	case WM8960_SYSCLK_MCLK:
 		snd_soc_component_update_bits(component, WM8960_CLOCK1,
@@ -1320,6 +1423,8 @@ static const struct snd_soc_dai_ops wm8960_dai_ops = {
 	.hw_free = wm8960_hw_free,
 	.mute_stream = wm8960_mute,
 	.set_fmt = wm8960_set_dai_fmt,
+	.startup = wm8960_startup,
+	.shutdown = wm8960_shutdown,
 	.set_clkdiv = wm8960_set_dai_clkdiv,
 	.set_pll = wm8960_set_dai_pll,
 	.set_sysclk = wm8960_set_dai_sysclk,
@@ -1354,9 +1459,39 @@ static int wm8960_probe(struct snd_soc_component *component)
 	else
 		wm8960->set_bias_level = wm8960_set_bias_level_out3;
 
+	#if DEBUG_REG
+	// common_record
+	snd_soc_component_update_bits(component, WM8960_IFACE2, BIT(6), BIT(6));		//0x09 6   ALRCGPIO
+	snd_soc_component_update_bits(component, WM8960_ADDCTL4, BIT(0), 0);			//0x30 0   MBSEL,0=0.9,1=0.65
+	snd_soc_component_update_bits(component, WM8960_POWER1, BIT(1), BIT(1));		//0x19 1   MICB
+	
+	// mic_record
+	snd_soc_component_update_bits(component, WM8960_INBMIX1, 0x7 << 1, 0x7 << 1);	//0x2b 3:1 LIN2BOOST,0x7=+6db
+	snd_soc_component_update_bits(component, WM8960_LADC, 0xff, 0xff);				//0x15 7:0 LADCVOL,0xff=+30db
+	snd_soc_component_update_bits(component, WM8960_POWER1, BIT(5), BIT(5));		//0x19 5   AINL
+	
+	// linein_record
+	snd_soc_component_update_bits(component, WM8960_INBMIX1, 0x7 << 4, 0x5 << 4);	//0x2b 6:4 LIN3BOOST,0x5=0db
+	snd_soc_component_update_bits(component, WM8960_INBMIX2, 0x7 << 4, 0x5 << 4);	//0x2c 6:4 RIN3BOOST,0x5=0db
+	snd_soc_component_update_bits(component, WM8960_LADC, 0xff, 0xc3);				//0x15 7:0 LADCVOL,0xc3=0db
+	snd_soc_component_update_bits(component, WM8960_RADC, 0xff, 0xc3);				//0x16 7:0 RADCVOL,0xc3=0db
+	snd_soc_component_update_bits(component, WM8960_POWER1, BIT(5), BIT(5));		//0x19 5   AINL
+	snd_soc_component_update_bits(component, WM8960_POWER1, BIT(4), BIT(4));		//0x19 4   AINR
+	
+	// playback
+	snd_soc_component_update_bits(component, WM8960_LOUTMIX, BIT(8), BIT(8));		//0x22 8   LD2LO
+	snd_soc_component_update_bits(component, WM8960_ROUTMIX, BIT(8), BIT(8));		//0x25 8   RD2RO
+	snd_soc_component_update_bits(component, WM8960_POWER3, BIT(3), BIT(3));		//0x2f 3   LOMIX
+	snd_soc_component_update_bits(component, WM8960_POWER3, BIT(2), BIT(2));		//0x2f 2   ROMIX
+	snd_soc_component_update_bits(component, WM8960_LOUT1, 0x7f, 0x79);				//0x02 6:0 LOUT1VOL,0x79=0db
+	snd_soc_component_update_bits(component, WM8960_ROUT1, 0x7f, 0x79);				//0x03 6:0 ROUT1VOL,0x79=0db
+	#endif
+	
 	snd_soc_add_component_controls(component, wm8960_snd_controls,
 				     ARRAY_SIZE(wm8960_snd_controls));
+	#if (!DEBUG_REG)
 	wm8960_add_widgets(component);
+	#endif
 
 	return 0;
 }
@@ -1444,6 +1579,7 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
 		}
 	}
 
+	#if (!DEBUG_REG)
 	/* Latch the update bits */
 	regmap_update_bits(wm8960->regmap, WM8960_LINVOL, 0x100, 0x100);
 	regmap_update_bits(wm8960->regmap, WM8960_RINVOL, 0x100, 0x100);
@@ -1469,6 +1605,7 @@ static int wm8960_i2c_probe(struct i2c_client *i2c,
 			   wm8960->pdata.hp_cfg[1] << 5);
 	regmap_update_bits(wm8960->regmap, WM8960_ADDCTL1, 3,
 			   wm8960->pdata.hp_cfg[2]);
+	#endif
 
 	i2c_set_clientdata(i2c, wm8960);
 

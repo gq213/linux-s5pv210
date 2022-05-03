@@ -720,6 +720,11 @@ static const struct samsung_clock_alias s5pv210_aliases[] __initconst = {
 
 static const struct samsung_pll_rate_table s5pv210_epll_rates[] __initconst = {
 	PLL_4600_RATE(		 24 * MHZ,  80000000, 80, 3, 3,     0, 1),
+	PLL_4600_RATE_CUSTOM(24 * MHZ,  73728000, 73, 3, 3, 47710, 1),	// 73727996
+	PLL_4600_RATE_CUSTOM(24 * MHZ,  67737600, 67, 3, 3, 48339, 1),	// 67737594
+	PLL_4600_RATE_CUSTOM(24 * MHZ,  49152000, 49, 3, 3,  9961, 0),	// 49151992
+	PLL_4600_RATE_CUSTOM(24 * MHZ,  45158400, 45, 3, 3, 10381, 0),	// 45158401
+	PLL_4600_RATE_CUSTOM(24 * MHZ,  32768000, 65, 3, 4, 35127, 1),	// 32767997
 	{ /* sentinel */ }
 };
 

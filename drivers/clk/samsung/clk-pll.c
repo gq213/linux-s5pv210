@@ -1577,6 +1577,8 @@ static unsigned long s5pv210_epll_recalc_rate(struct clk_hw *hw,
 	struct samsung_clk_pll *pll = to_clk_pll(hw);
 	u32 mdiv, pdiv, sdiv, k, pll_con, shift;
 	u64 fvco = parent_rate;
+	const struct samsung_pll_rate_table *rate_table = pll->rate_table;
+	int i;
 
 	pll_con = readl_relaxed(pll->con_reg);
 	mdiv = (pll_con >> S5PV210_EPLL_MDIV_SHIFT) & S5PV210_EPLL_MDIV_MASK;
@@ -1586,12 +1588,23 @@ static unsigned long s5pv210_epll_recalc_rate(struct clk_hw *hw,
 	pll_con = readl_relaxed(pll->con_reg + 4);
 	k = (pll_con >> S5PV210_EPLL_K_SHIFT) & S5PV210_EPLL_K_MASK;
 	
+	for (i = 0; i < pll->rate_count; i++) {
+		if (mdiv == rate_table[i].mdiv &&
+			pdiv == rate_table[i].pdiv &&
+			sdiv == rate_table[i].sdiv &&
+			k == rate_table[i].kdiv) {
+			fvco = rate_table[i].rate;
+			goto exit;
+		}
+	}
+	
 	shift = 16;
 	
 	fvco *= (mdiv << shift) + k;
 	do_div(fvco, (pdiv << sdiv));
 	fvco >>= shift;
 	
+exit:
 	pr_info("%s: %s, parent_rate=%lu, fvco=%lu\n", 
 			__func__,
 			clk_hw_get_name(hw), parent_rate, (unsigned long)fvco);

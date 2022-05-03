@@ -24,6 +24,8 @@
 	#size-cells = <1>;
 
 	aliases {
+		i2c1 = &i2c1;
+		i2s0 = &i2s0;
 		pinctrl0 = &pinctrl0;
 	};
 
@@ -118,6 +120,26 @@
 				 <&clocks FOUT_EPLL>,
 				 <&clocks SCLK_AUDIO0>;
 			#clock-cells = <1>;
+		};
+
+		i2s0: i2s@eee30000 {
+			compatible = "samsung,s5pv210-i2s";
+			reg = <0xeee30000 0x1000>;
+			interrupt-parent = <&vic2>;
+			interrupts = <16>;
+			dma-names = "rx", "tx", "tx-sec";
+			dmas = <&pdma1 9>, <&pdma1 10>, <&pdma1 11>;
+			clock-names = "iis",
+				      "i2s_opclk0",
+				      "i2s_opclk1";
+			clocks = <&clk_audss CLK_I2S>,
+				 <&clk_audss CLK_DOUT_AUD_BUS>,
+				 <&clk_audss CLK_I2S>;
+			samsung,idma-addr = <0xc0010000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2s0_bus>;
+			#sound-dai-cells = <0>;
+			status = "disabled";
 		};
 
 		pwm: pwm@e2500000 {
@@ -299,6 +321,20 @@
 			#dma-cells = <1>;
 			#dma-channels = <8>;
 			#dma-requests = <1>;
+		};
+
+		i2c1: i2c@fab00000 {
+			compatible = "samsung,s3c2440-i2c";
+			reg = <0xfab00000 0x1000>;
+			interrupt-parent = <&vic2>;
+			interrupts = <13>;
+			clocks = <&clocks CLK_I2C1>;
+			clock-names = "i2c";
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c1_bus>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
 		};
 	};
 };

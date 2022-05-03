@@ -118,6 +118,16 @@ enum samsung_pll_type {
 		.vsel	=	(_vsel),			\
 	}
 
+#define PLL_4600_RATE_CUSTOM(_fin, _rate, _m, _p, _s, _k, _vsel)	\
+	{							\
+		.rate	=	(_rate),			\
+		.mdiv	=	(_m),				\
+		.pdiv	=	(_p),				\
+		.sdiv	=	(_s),				\
+		.kdiv	=	(_k),				\
+		.vsel	=	(_vsel),			\
+	}
+
 #define PLL_4650_RATE(_fin, _rate, _m, _p, _s, _k, _mfr, _mrr, _vsel) \
 	{							\
 		.rate	=	PLL_VALID_RATE(_fin, _rate,	\

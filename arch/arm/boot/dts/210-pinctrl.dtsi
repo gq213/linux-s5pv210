@@ -306,6 +306,21 @@
 		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
 	};
 
+	i2s0_bus: i2s0-bus {
+		samsung,pins = "gpi-0", "gpi-1", "gpi-2", "gpi-3",
+				"gpi-4", "gpi-5", "gpi-6";
+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
+		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
+		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
+	};
+
+	i2c1_bus: i2c1-bus {
+		samsung,pins = "gpd1-2", "gpd1-3";
+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
+		samsung,pin-pud = <S3C64XX_PIN_PULL_UP>;
+		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
+	};
+
 	sd0_clk: sd0-clk {
 		samsung,pins = "gpg0-0";
 		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;

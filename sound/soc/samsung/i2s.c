@@ -515,10 +515,13 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id, unsigned int rfs,
 
 	switch (clk_id) {
 	case SAMSUNG_I2S_OPCLK:
+		dev_info(&i2s->pdev->dev, "%s: opclk=%d\n", __func__, dir);
 		mask = MOD_OPCLK_MASK;
 		val = (dir << MOD_OPCLK_SHIFT) & MOD_OPCLK_MASK;
 		break;
 	case SAMSUNG_I2S_CDCLK:
+		dev_info(&i2s->pdev->dev, "%s: rfs=%u, cdclk=%s\n", __func__, 
+				rfs, (dir == SND_SOC_CLOCK_IN) ? "in" : "out");
 		mask = 1 << i2s_regs->cdclkcon_off;
 		/* Shouldn't matter in GATING(CLOCK_IN) mode */
 		if (dir == SND_SOC_CLOCK_IN)
@@ -544,6 +547,7 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id, unsigned int rfs,
 
 	case SAMSUNG_I2S_RCLKSRC_0: /* clock corrsponding to IISMOD[10] := 0 */
 	case SAMSUNG_I2S_RCLKSRC_1: /* clock corrsponding to IISMOD[10] := 1 */
+		dev_info(&i2s->pdev->dev, "%s: rclksrc=%d\n", __func__, clk_id);
 		mask = 1 << i2s_regs->rclksrc_off;
 
 		if ((priv->quirks & QUIRK_NO_MUXPSR)
@@ -577,6 +581,12 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id, unsigned int rfs,
 				priv->op_clk = NULL;
 				goto err;
 			}
+			
+			ret = clk_set_parent(priv->clk_table[CLK_I2S_RCLK_SRC], priv->op_clk);
+			dev_info(&i2s->pdev->dev, "%s: set parent %s-->%s, %s\n", __func__,
+					__clk_get_name(priv->clk_table[CLK_I2S_RCLK_SRC]), 
+					__clk_get_name(priv->op_clk), 
+					(ret == 0) ? "ok" : "error");
 
 			ret = clk_prepare_enable(priv->op_clk);
 			if (ret) {
@@ -627,6 +637,8 @@ static int i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	int lrp_shift, sdf_shift, sdf_mask, lrp_rlow, mod_slave;
 	u32 mod, tmp = 0;
 	unsigned long flags;
+	
+	dev_info(&i2s->pdev->dev, "%s: fmt=0x%08x\n", __func__, fmt);
 
 	lrp_shift = priv->variant_regs->lrp_off;
 	sdf_shift = priv->variant_regs->sdf_off;
@@ -724,6 +736,9 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
 	u32 mod, mask = 0, val = 0;
 	struct clk *rclksrc;
 	unsigned long flags;
+	
+	dev_info(&i2s->pdev->dev, "%s: channels=%u, width=%u\n", __func__, 
+			params_channels(params), params_width(params));
 
 	WARN_ON(!pm_runtime_active(dai->dev));
 
@@ -820,6 +835,8 @@ static int i2s_startup(struct snd_pcm_substream *substream,
 	struct i2s_dai *i2s = to_info(dai);
 	struct i2s_dai *other = get_other_dai(i2s);
 	unsigned long flags;
+	
+	dev_info(&i2s->pdev->dev, "%s\n", __func__);
 
 	pm_runtime_get_sync(dai->dev);
 
@@ -847,6 +864,8 @@ static void i2s_shutdown(struct snd_pcm_substream *substream,
 	struct i2s_dai *i2s = to_info(dai);
 	struct i2s_dai *other = get_other_dai(i2s);
 	unsigned long flags;
+	
+	dev_info(&i2s->pdev->dev, "%s\n", __func__);
 
 	spin_lock_irqsave(&priv->pcm_lock, flags);
 
@@ -871,6 +890,8 @@ static int config_setup(struct i2s_dai *i2s)
 	struct i2s_dai *other = get_other_dai(i2s);
 	unsigned rfs, bfs, blc;
 	u32 psr;
+	
+	dev_info(&i2s->pdev->dev, "%s\n", __func__);
 
 	blc = get_blc(i2s);
 
@@ -918,9 +939,9 @@ static int config_setup(struct i2s_dai *i2s)
 	if (!(priv->quirks & QUIRK_NO_MUXPSR)) {
 		psr = priv->rclk_srcrate / i2s->frmclk / rfs;
 		writel(((psr - 1) << 8) | PSR_PSREN, priv->addr + I2SPSR);
-		dev_dbg(&i2s->pdev->dev,
-			"RCLK_SRC=%luHz PSR=%u, RCLK=%dfs, BCLK=%dfs\n",
-				priv->rclk_srcrate, psr, rfs, bfs);
+		dev_info(&i2s->pdev->dev,
+			"%s: RCLK_SRC=%luHz PSR=%u, RCLK=%dfs, BCLK=%dfs\n",
+				__func__, priv->rclk_srcrate, psr, rfs, bfs);
 	}
 
 	return 0;
@@ -939,6 +960,7 @@ static int i2s_trigger(struct snd_pcm_substream *substream,
 	case SNDRV_PCM_TRIGGER_START:
 	case SNDRV_PCM_TRIGGER_RESUME:
 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+		dev_info(&i2s->pdev->dev, "%s: start\n", __func__);
 		pm_runtime_get_sync(dai->dev);
 		spin_lock_irqsave(&priv->lock, flags);
 
@@ -957,6 +979,7 @@ static int i2s_trigger(struct snd_pcm_substream *substream,
 	case SNDRV_PCM_TRIGGER_STOP:
 	case SNDRV_PCM_TRIGGER_SUSPEND:
 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+		dev_info(&i2s->pdev->dev, "%s: stop\n", __func__);
 		spin_lock_irqsave(&priv->lock, flags);
 
 		if (capture) {
@@ -983,6 +1006,7 @@ static int i2s_set_clkdiv(struct snd_soc_dai *dai,
 
 	switch (div_id) {
 	case SAMSUNG_I2S_DIV_BCLK:
+		dev_info(&i2s->pdev->dev, "%s: bfs=%d\n", __func__, div);
 		pm_runtime_get_sync(dai->dev);
 		if ((any_active(i2s) && div && (get_bfs(i2s) != div))
 			|| (other && other->bfs && (other->bfs != div))) {
@@ -1524,7 +1548,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
 	if (ret < 0)
 		goto err_disable_pm;
 
-	priv->op_clk = clk_get_parent(priv->clk_table[CLK_I2S_RCLK_SRC]);
+	/* priv->op_clk = clk_get_parent(priv->clk_table[CLK_I2S_RCLK_SRC]); */
 
 	return 0;
 
