@@ -165,6 +165,8 @@ static unsigned int sdhci_s3c_get_max_clk(struct sdhci_host *host)
 		if (rate > max)
 			max = rate;
 	}
+	
+	dev_info(&ourhost->pdev->dev, "max=%ld\n", max);
 
 	return max;
 }
@@ -203,13 +205,13 @@ static unsigned int sdhci_s3c_consider_clock(struct sdhci_s3c *ourhost,
 	}
 
 	if (shift > 8) {
-		dev_dbg(&ourhost->pdev->dev,
+		dev_info(&ourhost->pdev->dev,
 			"clk %d: rate %ld, min rate %lu > wanted %u\n",
 			src, rate, rate / 256, wanted);
 		return UINT_MAX;
 	}
 
-	dev_dbg(&ourhost->pdev->dev, "clk %d: rate %ld, want %d, got %ld\n",
+	dev_info(&ourhost->pdev->dev, "clk %d: rate %ld, want %d, got %ld\n",
 		src, rate, wanted, rate >> shift);
 
 	return wanted - (rate >> shift);
@@ -248,7 +250,7 @@ static void sdhci_s3c_set_clock(struct sdhci_host *host, unsigned int clock)
 		}
 	}
 
-	dev_dbg(&ourhost->pdev->dev,
+	dev_info(&ourhost->pdev->dev,
 		"selected source %d, clock %d, delta %d\n",
 		 best_src, clock, best);
 

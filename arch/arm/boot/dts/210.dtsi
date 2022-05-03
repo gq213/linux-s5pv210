@@ -178,6 +178,50 @@
 			status = "disabled";
 		};
 
+		sdhci0: sdhci@eb000000 {
+			compatible = "samsung,s3c6410-sdhci";
+			reg = <0xeb000000 0x100000>;
+			interrupt-parent = <&vic1>;
+			interrupts = <26>;
+			clock-names = "hsmmc", "mmc_busclk.0";
+			clocks = <&clocks CLK_HSMMC0>,
+					<&clocks SCLK_MMC0>;
+			status = "disabled";
+		};
+
+		sdhci1: sdhci@eb100000 {
+			compatible = "samsung,s3c6410-sdhci";
+			reg = <0xeb100000 0x100000>;
+			interrupt-parent = <&vic1>;
+			interrupts = <27>;
+			clock-names = "hsmmc", "mmc_busclk.0";
+			clocks = <&clocks CLK_HSMMC1>,
+					<&clocks SCLK_MMC1>;
+			status = "disabled";
+		};
+
+		sdhci2: sdhci@eb200000 {
+			compatible = "samsung,s3c6410-sdhci";
+			reg = <0xeb200000 0x100000>;
+			interrupt-parent = <&vic1>;
+			interrupts = <28>;
+			clock-names = "hsmmc", "mmc_busclk.0";
+			clocks = <&clocks CLK_HSMMC2>,
+					<&clocks SCLK_MMC2>;
+			status = "disabled";
+		};
+
+		sdhci3: sdhci@eb300000 {
+			compatible = "samsung,s3c6410-sdhci";
+			reg = <0xeb300000 0x100000>;
+			interrupt-parent = <&vic3>;
+			interrupts = <2>;
+			clock-names = "hsmmc", "mmc_busclk.0";
+			clocks = <&clocks CLK_HSMMC3>,
+					<&clocks SCLK_MMC3>;
+			status = "disabled";
+		};
+
 		vic0: interrupt-controller@f2000000 {
 			compatible = "arm,pl192-vic";
 			interrupt-controller;
