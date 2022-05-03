@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: GPL-2.0
+
+/dts-v1/;
+#include "210.dtsi"
+
+/ {
+	model = "sate210 based on S5PV210";
+	compatible = "samsung,s5pv210";
+
+	chosen {
+		bootargs = "console=ttySAC1 noinitrd root=/dev/mmcblk0p1 rw rootfstype=ext4 rootwait init=/linuxrc ignore_loglevel earlyprintk";
+	};
+
+	memory@20000000 {
+		device_type = "memory";
+		reg = <0x20000000 0x10000000
+			   0x40000000 0x10000000>;
+	};
+};
+
+&xusbxti {
+	clock-frequency = <24000000>;
+};
+
+&uart0 {
+	pinctrl-0 = <&uart0_data>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&uart1 {
+	pinctrl-0 = <&uart1_data>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&uart2 {
+	pinctrl-0 = <&uart2_data>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&uart3 {
+	pinctrl-0 = <&uart3_data>;
+	pinctrl-names = "default";
+	status = "okay";
+};

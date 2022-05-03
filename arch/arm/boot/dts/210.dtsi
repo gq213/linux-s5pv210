@@ -1,0 +1,223 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Samsung's S5PV210 SoC device tree source
+ *
+ * Copyright (c) 2013-2014 Samsung Electronics, Co. Ltd.
+ *
+ * Mateusz Krawczuk <m.krawczuk@partner.samsung.com>
+ * Tomasz Figa <t.figa@samsung.com>
+ *
+ * Samsung's S5PV210 SoC device nodes are listed in this file. S5PV210
+ * based board files can include this file and provide values for board specfic
+ * bindings.
+ *
+ * Note: This file does not include device nodes for all the controllers in
+ * S5PV210 SoC. As device tree coverage for S5PV210 increases, additional
+ * nodes can be added to this file.
+ */
+
+#include <dt-bindings/clock/s5pv210.h>
+#include <dt-bindings/clock/s5pv210-audss.h>
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	aliases {
+		pinctrl0 = &pinctrl0;
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a8";
+			reg = <0>;
+		};
+	};
+
+	xxti: oscillator-0 {
+		compatible = "fixed-clock";
+		clock-frequency = <0>;
+		clock-output-names = "xxti";
+		#clock-cells = <0>;
+	};
+
+	xusbxti: oscillator-1 {
+		compatible = "fixed-clock";
+		clock-frequency = <0>;
+		clock-output-names = "xusbxti";
+		#clock-cells = <0>;
+	};
+
+	soc {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		clocks: clock-controller@e0100000 {
+			compatible = "samsung,s5pv210-clock";
+			reg = <0xe0100000 0x10000>;
+			clock-names = "xxti", "xusbxti";
+			clocks = <&xxti>, <&xusbxti>;
+			#clock-cells = <1>;
+		};
+
+		pmu_syscon: syscon@e0108000 {
+			compatible = "samsung-s5pv210-pmu", "syscon";
+			reg = <0xe0108000 0x8000>;
+		};
+
+		pinctrl0: pinctrl@e0200000 {
+			compatible = "samsung,s5pv210-pinctrl";
+			reg = <0xe0200000 0x1000>;
+			interrupt-parent = <&vic0>;
+			interrupts = <30>;
+
+			wakeup-interrupt-controller {
+				compatible = "samsung,s5pv210-wakeup-eint";
+				interrupts = <16>;
+				interrupt-parent = <&vic0>;
+			};
+		};
+
+		pdma0: dma@e0900000 {
+			compatible = "arm,pl330", "arm,primecell";
+			reg = <0xe0900000 0x1000>;
+			interrupt-parent = <&vic0>;
+			interrupts = <19>;
+			clocks = <&clocks CLK_PDMA0>;
+			clock-names = "apb_pclk";
+			#dma-cells = <1>;
+			#dma-channels = <8>;
+			#dma-requests = <32>;
+		};
+
+		pdma1: dma@e0a00000 {
+			compatible = "arm,pl330", "arm,primecell";
+			reg = <0xe0a00000 0x1000>;
+			interrupt-parent = <&vic0>;
+			interrupts = <20>;
+			clocks = <&clocks CLK_PDMA1>;
+			clock-names = "apb_pclk";
+			#dma-cells = <1>;
+			#dma-channels = <8>;
+			#dma-requests = <32>;
+		};
+
+		clk_audss: clock-controller@eee10000 {
+			compatible = "samsung,s5pv210-audss-clock";
+			reg = <0xeee10000 0x1000>;
+			clock-names = "hclk", "xxti",
+				      "fout_epll",
+				      "sclk_audio0";
+			clocks = <&clocks DOUT_HCLKP>, <&xxti>,
+				 <&clocks FOUT_EPLL>,
+				 <&clocks SCLK_AUDIO0>;
+			#clock-cells = <1>;
+		};
+
+		pwm: pwm@e2500000 {
+			compatible = "samsung,s5pc100-pwm";
+			reg = <0xe2500000 0x1000>;
+			interrupt-parent = <&vic0>;
+			interrupts = <21>, <22>, <23>, <24>, <25>;
+			clock-names = "timers";
+			clocks = <&clocks CLK_PWM>;
+			#pwm-cells = <3>;
+		};
+
+		uart0: serial@e2900000 {
+			compatible = "samsung,s5pv210-uart";
+			reg = <0xe2900000 0x400>;
+			interrupt-parent = <&vic1>;
+			interrupts = <10>;
+			clock-names = "uart", "clk_uart_baud0",
+					"clk_uart_baud1";
+			clocks = <&clocks CLK_UART0>, <&clocks CLK_UART0>,
+					<&clocks SCLK_UART0>;
+			status = "disabled";
+		};
+
+		uart1: serial@e2900400 {
+			compatible = "samsung,s5pv210-uart";
+			reg = <0xe2900400 0x400>;
+			interrupt-parent = <&vic1>;
+			interrupts = <11>;
+			clock-names = "uart", "clk_uart_baud0",
+					"clk_uart_baud1";
+			clocks = <&clocks CLK_UART1>, <&clocks CLK_UART1>,
+					<&clocks SCLK_UART1>;
+			status = "disabled";
+		};
+
+		uart2: serial@e2900800 {
+			compatible = "samsung,s5pv210-uart";
+			reg = <0xe2900800 0x400>;
+			interrupt-parent = <&vic1>;
+			interrupts = <12>;
+			clock-names = "uart", "clk_uart_baud0",
+					"clk_uart_baud1";
+			clocks = <&clocks CLK_UART2>, <&clocks CLK_UART2>,
+					<&clocks SCLK_UART2>;
+			status = "disabled";
+		};
+
+		uart3: serial@e2900c00 {
+			compatible = "samsung,s5pv210-uart";
+			reg = <0xe2900c00 0x400>;
+			interrupt-parent = <&vic1>;
+			interrupts = <13>;
+			clock-names = "uart", "clk_uart_baud0",
+					"clk_uart_baud1";
+			clocks = <&clocks CLK_UART3>, <&clocks CLK_UART3>,
+					<&clocks SCLK_UART3>;
+			status = "disabled";
+		};
+
+		vic0: interrupt-controller@f2000000 {
+			compatible = "arm,pl192-vic";
+			interrupt-controller;
+			reg = <0xf2000000 0x1000>;
+			#interrupt-cells = <1>;
+		};
+
+		vic1: interrupt-controller@f2100000 {
+			compatible = "arm,pl192-vic";
+			interrupt-controller;
+			reg = <0xf2100000 0x1000>;
+			#interrupt-cells = <1>;
+		};
+
+		vic2: interrupt-controller@f2200000 {
+			compatible = "arm,pl192-vic";
+			interrupt-controller;
+			reg = <0xf2200000 0x1000>;
+			#interrupt-cells = <1>;
+		};
+
+		vic3: interrupt-controller@f2300000 {
+			compatible = "arm,pl192-vic";
+			interrupt-controller;
+			reg = <0xf2300000 0x1000>;
+			#interrupt-cells = <1>;
+		};
+
+		mdma1: mdma@fa200000 {
+			compatible = "arm,pl330", "arm,primecell";
+			reg = <0xfa200000 0x1000>;
+			interrupt-parent = <&vic0>;
+			interrupts = <18>;
+			clocks = <&clocks CLK_MDMA>;
+			clock-names = "apb_pclk";
+			#dma-cells = <1>;
+			#dma-channels = <8>;
+			#dma-requests = <1>;
+		};
+	};
+};
+
+#include "210-pinctrl.dtsi"
