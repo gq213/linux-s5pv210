@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0
 
 /dts-v1/;
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/gpio/gpio.h>
 #include "210.dtsi"
 
 / {
@@ -15,6 +17,23 @@
 		device_type = "memory";
 		reg = <0x20000000 0x10000000
 			   0x40000000 0x10000000>;
+	};
+
+	210_misc {
+		compatible = "210,misc";
+	};
+
+	ethernet@88000000 {
+		compatible = "davicom,dm9000";
+		reg = <0x88000000 0x2 0x88000008 0x2>;
+		interrupt-parent = <&gph0>;
+		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
+		local-mac-address = [00 00 de ad be ef];
+		davicom,no-eeprom;
+		pinctrl-names = "default";
+		pinctrl-0 = <&xm0_csn1 &xm0_oen &xm0_wen &xm0_addr2 &xm0_data>;
+		assigned-clocks = <&clocks CLK_SROMC>;
+		assigned-clock-rates = <0>;
 	};
 };
 

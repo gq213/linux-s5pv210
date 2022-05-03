@@ -551,7 +551,7 @@ static const struct samsung_gate_clock gate_clks[] __initconst = {
 	GATE(CLK_PDMA0, "pdma0", "dout_hclkp", CLK_GATE_IP0, 3, 0, 0),
 	GATE(CLK_MDMA, "mdma", "dout_hclkd", CLK_GATE_IP0, 2, 0, 0),
 
-	GATE(CLK_SROMC, "sromc", "dout_hclkp", CLK_GATE_IP1, 26, 0, 0),
+	GATE(CLK_SROMC, "sromc", "dout_hclkp", CLK_GATE_IP1, 26, CLK_IGNORE_UNUSED, 0),
 	GATE(CLK_NANDXL, "nandxl", "dout_hclkp", CLK_GATE_IP1, 24, 0, 0),
 	GATE(CLK_USB_OTG, "usb_otg", "dout_hclkp", CLK_GATE_IP1, 16, 0, 0),
 	GATE(CLK_TVENC, "tvenc", "dout_hclkd", CLK_GATE_IP1, 10, 0, 0),
