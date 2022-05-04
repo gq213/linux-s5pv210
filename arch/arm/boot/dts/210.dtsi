@@ -312,6 +312,17 @@
 			#interrupt-cells = <1>;
 		};
 
+		fimd: fimd@f8000000 {
+			compatible = "samsung,s5pv210-fimd";
+			interrupt-parent = <&vic2>;
+			reg = <0xf8000000 0x20000>;
+			interrupt-names = "fifo", "vsync", "lcd_sys";
+			interrupts = <0>, <1>, <2>;
+			clocks = <&clocks SCLK_FIMD>, <&clocks CLK_FIMD>;
+			clock-names = "sclk_fimd", "fimd";
+			status = "disabled";
+		};
+
 		mdma1: mdma@fa200000 {
 			compatible = "arm,pl330", "arm,primecell";
 			reg = <0xfa200000 0x1000>;

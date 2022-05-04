@@ -406,6 +406,7 @@ static int fimd_atomic_check(struct exynos_drm_crtc *crtc,
 		DRM_DEV_ERROR(ctx->dev, "Mode has zero clock value.\n");
 		return -EINVAL;
 	}
+	DRM_DEV_INFO(ctx->dev, "mode->clock=%d\n", mode->clock);
 
 	ideal_clk = mode->clock * 1000;
 
@@ -424,6 +425,7 @@ static int fimd_atomic_check(struct exynos_drm_crtc *crtc,
 			      lcd_rate, ideal_clk);
 		return -EINVAL;
 	}
+	DRM_DEV_INFO(ctx->dev, "ideal_clk=%lu, lcd_rate=%lu\n", ideal_clk, lcd_rate);
 
 	/* Find the clock divider value that gets us closest to ideal_clk */
 	clkdiv = DIV_ROUND_CLOSEST(lcd_rate, ideal_clk);
@@ -434,6 +436,7 @@ static int fimd_atomic_check(struct exynos_drm_crtc *crtc,
 	}
 
 	ctx->clkdiv = (clkdiv < 0x100) ? clkdiv : 0xff;
+	DRM_DEV_INFO(ctx->dev, "ctx->clkdiv=%d\n", ctx->clkdiv);
 
 	return 0;
 }
@@ -668,27 +671,32 @@ static void fimd_win_set_pixfmt(struct fimd_context *ctx, unsigned int win,
 
 	switch (pixel_format) {
 	case DRM_FORMAT_C8:
+		DRM_DEV_INFO(ctx->dev, "pixel_format=DRM_FORMAT_C8\n");
 		val |= WINCON0_BPPMODE_8BPP_PALETTE;
 		val |= WINCONx_BURSTLEN_8WORD;
 		val |= WINCONx_BYTSWP;
 		break;
 	case DRM_FORMAT_XRGB1555:
+		DRM_DEV_INFO(ctx->dev, "pixel_format=DRM_FORMAT_XRGB1555\n");
 		val |= WINCON0_BPPMODE_16BPP_1555;
 		val |= WINCONx_HAWSWP;
 		val |= WINCONx_BURSTLEN_16WORD;
 		break;
 	case DRM_FORMAT_RGB565:
+		DRM_DEV_INFO(ctx->dev, "pixel_format=DRM_FORMAT_RGB565\n");
 		val |= WINCON0_BPPMODE_16BPP_565;
 		val |= WINCONx_HAWSWP;
 		val |= WINCONx_BURSTLEN_16WORD;
 		break;
 	case DRM_FORMAT_XRGB8888:
+		DRM_DEV_INFO(ctx->dev, "pixel_format=DRM_FORMAT_XRGB8888\n");
 		val |= WINCON0_BPPMODE_24BPP_888;
 		val |= WINCONx_WSWP;
 		val |= WINCONx_BURSTLEN_16WORD;
 		break;
 	case DRM_FORMAT_ARGB8888:
 	default:
+		DRM_DEV_INFO(ctx->dev, "pixel_format=DRM_FORMAT_ARGB8888\n");
 		val |= WINCON1_BPPMODE_25BPP_A1888;
 		val |= WINCONx_WSWP;
 		val |= WINCONx_BURSTLEN_16WORD;

@@ -1,0 +1,130 @@
+
+hdmi和vga可以同时输出
+
+(bus_clk)
+fimd
+ xusbxti                              2        2        0    24000000          0     0  50000         Y
+    fin_pll                           2        2        0    24000000          0     0  50000         Y
+       fout_mpll                      1        1        0   667000000          0     0  50000         Y
+          mout_mpll                   5        5        0   667000000          0     0  50000         Y
+             mout_dsys                1        1        0   667000000          0     0  50000         Y
+                dout_hclkd            1        2        0   166750000          0     0  50000         Y
+                   fimd               0        0        0   166750000          0     0  50000         Y
+
+(lcd_clk)
+sclk_fimd
+	(gate)
+	dout_fimd
+		(div16)
+		mout_fimd
+			(mux)
+			mout_vpll
+				(mux)
+				fout_vpll
+					(pll)
+					mout_vpllsrc
+						(mux)
+						fin_pll
+							(mux)
+							xusbxti
+
+ xusbxti                              2        2        0    24000000          0     0  50000         Y
+    fin_pll                           2        2        0    24000000          0     0  50000         Y
+       mout_vpllsrc                   0        0        0    24000000          0     0  50000         Y
+          fout_vpll                   0        0        0    74250000          0     0  50000         Y
+             mout_vpll                0        0        0    74250000          0     0  50000         Y
+                mout_fimd             0        0        0    74250000          0     0  50000         Y
+                   dout_fimd          0        0        0    74250000          0     0  50000         Y
+                      sclk_fimd       0        0        0    74250000          0     0  50000         Y
+
+1280*720*32/8
+0xff
+tr '\000' '\377' < /dev/zero | dd of=/dev/fb0 bs=4k count=900
+0x00
+dd if=/dev/zero of=/dev/fb0 bs=4k count=900
+
+edid数据分析
+
+23-25
+0xbd, 1011 1101
+7 720 x 400 @ 70Hz IBM, VGA
+6 720 x 400 @ 88Hz IBM, XGA2
+5 640 x 480 @ 60Hz IBM, VGA
+4 640 x 480 @ 67Hz Apple, Mac II
+3 640 x 480 @ 72Hz VESA
+2 640 x 480 @ 75Hz VESA
+1 800 x 600 @ 56Hz VESA
+0 800 x 600 @ 60Hz VESA
+0x4b, 0100 1011
+7 800 x 600 @ 72Hz VESA
+6 800 x 600 @ 75Hz VESA
+5 832 x 624 @ 75Hz Apple, Mac II
+4 1024 x 768 @ 87Hz(I) IBM - Interlaced
+3 1024 x 768 @ 60Hz VESA
+2 1024 x 768 @ 70Hz VESA
+1 1024 x 768 @ 75Hz VESA
+0 1280 x 1024 @ 75Hz VESA
+0x00
+7 1152 x 870 @ 75Hz Apple, Mac II
+6-0 Reserved for Manufacturer Specified Timings
+
+26-34
+0xd1, 0xc0, 1920 x 1080@60
+0x95, 0x00, 1440 x 900@60
+0x81, 0xc0, 1280 x 720@60
+0x81, 0x80, 1280 x 800#60,not 60(RB)
+0x95, 0x0f, 1440 x 900@75
+0xb3, 0x00, 1680 x 1050@60
+0x81, 0x40, 1280 x 960@60
+0x01, 0x01,
+
+23bit(0)
+Resolution: 800 x 600 at 60 Hz (non-interlaced)
+EDID ID: DMT ID: 09h; Std. 2 Byte Code: (45, 40)h; CVT 3 Byte Code: n/a
+
+24bit(3)
+Resolution: 1024 x 768 at 60 Hz (non-interlaced)
+EDID ID: DMT ID: 10h; Std. 2 Byte Code: (61, 40)h; CVT 3 Byte Code: n/a
+
+Resolution: 1280 x 720 at 60 Hz (non-interlaced)
+EDID ID: DMT ID: 55h; Std. 2 Byte Code: 81h, C0h; CVT 3 Byte Code: n/a
+
+Resolution: 1280 x 1024 at 60 Hz (non-interlaced)
+EDID ID: DMT ID: 23h; Std. 2 Byte Code: (81, 80)h; CVT 3 Byte Code: n/a
+
+Resolution: 1440 x 900 at 60 Hz (non-interlaced)
+EDID ID: DMT ID: 2Fh; Std. 2 Byte Code: (95, 00)h; CVT 3 Byte Code: (C1, 18, 28)h
+
+Resolution: 1920 x 1080 at 60 Hz (non-interlaced)
+EDID ID: DMT ID: 52h; Std. 2 Byte Code: (D1, C0)h; CVT 3 Byte Code: n/a
+
+36-7d
+0x02, 0x3a, 
+Pixel clock / 10,000			3a02=14850=148.5M
+0x80, 
+0x18, 
+0x71, 
+Horizontal Active				780=1920 Pixels
+Horizontal Blanking				118=280 Pixels
+0x38, 
+0x2d, 
+0x40, 
+Vertical Active					438=1080 Lines
+Vertical Blanking				02d=45 Lines
+0x58, 
+0x2c, 
+0x45, 
+0x00, 
+Horizontal Sync Offset			58=88 Pixels
+Horizontal Sync Pulse Width		2c=44 Pixels
+Vertical Sync Offset			4=4 lines
+Vertical Sync Pulse Width		5=5 lines
+0x09, 
+0x25,
+0x21, 
+Horizontal Image Size			209=521mm
+Vertical Image Size				125=293mm
+0x00,
+0x00, 
+0x1e, = 0001 1110				Vsync Positive,Hsync Positive
+fps=57.13

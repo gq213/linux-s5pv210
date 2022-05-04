@@ -29,6 +29,15 @@ static int _probe(struct platform_device *pdev)
 		dev_err(dev, "Failed to ioremap 0xE8000000\n");
 	}
 	
+	va = ioremap(0xe0107008, PAGE_SIZE);
+	if (va) {
+		writel(0x2, va);
+		
+		iounmap(va);
+	} else {
+		dev_err(dev, "Failed to ioremap 0xe0107008\n");
+	}
+	
 	dev_info(dev, "probe done\n");
 
 	return 0;

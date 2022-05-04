@@ -557,7 +557,7 @@ static const struct samsung_gate_clock gate_clks[] __initconst = {
 	GATE(CLK_TVENC, "tvenc", "dout_hclkd", CLK_GATE_IP1, 10, 0, 0),
 	GATE(CLK_MIXER, "mixer", "dout_hclkd", CLK_GATE_IP1, 9, CLK_IGNORE_UNUSED, 0),
 	GATE(CLK_VP, "vp", "dout_hclkd", CLK_GATE_IP1, 8, CLK_IGNORE_UNUSED, 0),
-	GATE(CLK_FIMD, "fimd", "dout_hclkd", CLK_GATE_IP1, 0, 0, 0),
+	GATE(CLK_FIMD, "fimd", "dout_hclkd", CLK_GATE_IP1, 0, CLK_IGNORE_UNUSED, 0),
 
 	GATE(CLK_HSMMC2, "hsmmc2", "dout_hclkp", CLK_GATE_IP2, 18, 0, 0),
 	GATE(CLK_HSMMC1, "hsmmc1", "dout_hclkp", CLK_GATE_IP2, 17, 0, 0),
@@ -608,7 +608,7 @@ static const struct samsung_gate_clock gate_clks[] __initconst = {
 	GATE(SCLK_MMC0, "sclk_mmc0", "dout_mmc0", CLK_SRC_MASK0, 8,
 			CLK_SET_RATE_PARENT, 0),
 	GATE(SCLK_FIMD, "sclk_fimd", "dout_fimd", CLK_SRC_MASK0, 5,
-			CLK_SET_RATE_PARENT, 0),
+			CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0),
 	GATE(SCLK_CAM1, "sclk_cam1", "dout_cam1", CLK_SRC_MASK0, 4,
 			CLK_SET_RATE_PARENT, 0),
 	GATE(SCLK_CAM0, "sclk_cam0", "dout_cam0", CLK_SRC_MASK0, 3,
@@ -730,7 +730,13 @@ static const struct samsung_pll_rate_table s5pv210_epll_rates[] __initconst = {
 };
 
 static const struct samsung_pll_rate_table s5pv210_vpll_rates[] __initconst = {
+	PLL_4502_RATE(24 * MHZ, 148500000, 198,  8, 2, 1),
+	PLL_4502_RATE(24 * MHZ, 108000000, 108,  6, 2, 0),
+	PLL_4502_RATE(24 * MHZ, 106500000, 213, 12, 2, 0),
+	PLL_4502_RATE(24 * MHZ,  74250000, 198,  8, 3, 1),
+	PLL_4502_RATE(24 * MHZ,  65000000,  65,  3, 3, 1),
 	PLL_4502_RATE(24 * MHZ,  54000000, 108,  6, 3, 0),
+	PLL_4502_RATE(24 * MHZ,  40000000,  80,  3, 4, 1),
 	{ /* sentinel */ }
 };
 
