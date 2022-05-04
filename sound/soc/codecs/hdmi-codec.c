@@ -430,9 +430,12 @@ static int hdmi_codec_iec958_mask_get(struct snd_kcontrol *kcontrol,
 static int hdmi_codec_startup(struct snd_pcm_substream *substream,
 			      struct snd_soc_dai *dai)
 {
+	struct snd_soc_component *component = dai->component;
 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
 	int ret = 0;
+	
+	dev_info(component->dev, "%s\n", __func__);
 
 	mutex_lock(&hcp->lock);
 	if (hcp->busy) {
@@ -471,7 +474,10 @@ err:
 static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
 				struct snd_soc_dai *dai)
 {
+	struct snd_soc_component *component = dai->component;
 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+	
+	dev_info(component->dev, "%s\n", __func__);
 
 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
@@ -536,7 +542,7 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
 	if (!hcp->hcd.ops->hw_params)
 		return 0;
 
-	dev_dbg(dai->dev, "%s() width %d rate %d channels %d\n", __func__,
+	dev_info(dai->dev, "%s() width %d rate %d channels %d\n", __func__,
 		params_width(params), params_rate(params),
 		params_channels(params));
 
@@ -601,7 +607,10 @@ static int hdmi_codec_prepare(struct snd_pcm_substream *substream,
 static int hdmi_codec_i2s_set_fmt(struct snd_soc_dai *dai,
 				  unsigned int fmt)
 {
+	struct snd_soc_component *component = dai->component;
 	struct hdmi_codec_daifmt *cf = dai->playback_dma_data;
+	
+	dev_info(component->dev, "%s: fmt=0x%08x\n", __func__, fmt);
 
 	/* Reset daifmt */
 	memset(cf, 0, sizeof(*cf));
@@ -667,7 +676,10 @@ static int hdmi_codec_i2s_set_fmt(struct snd_soc_dai *dai,
 
 static int hdmi_codec_mute(struct snd_soc_dai *dai, int mute, int direction)
 {
+	struct snd_soc_component *component = dai->component;
 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+
+	dev_info(component->dev, "%s: mute=%d\n", __func__, mute);
 
 	/*
 	 * ignore if direction was CAPTURE

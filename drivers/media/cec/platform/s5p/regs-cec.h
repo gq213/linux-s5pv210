@@ -88,6 +88,6 @@
 #define S5P_CEC_LOGIC_ADDR_MASK			(0xF)
 
 /* PMU Registers for PHY */
-#define EXYNOS_HDMI_PHY_CONTROL			0x700
+#define EXYNOS_HDMI_PHY_CONTROL			0x6804
 
 #endif	/* __EXYNOS_REGS__H	*/

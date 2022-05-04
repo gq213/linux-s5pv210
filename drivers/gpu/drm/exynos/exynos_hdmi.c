@@ -56,6 +56,7 @@ enum hdmi_type {
 enum hdmi_mapped_regs {
 	HDMI_PHY_STATUS = HDMI_MAPPED_BASE,
 	HDMI_PHY_RSTOUT,
+	HDMI_CORE_RSTOUT,
 	HDMI_ACR_CON,
 	HDMI_ACR_MCTS0,
 	HDMI_ACR_CTS0,
@@ -65,6 +66,7 @@ enum hdmi_mapped_regs {
 static const u32 hdmi_reg_map[][HDMI_TYPE_COUNT] = {
 	{ HDMI_V13_PHY_STATUS, HDMI_PHY_STATUS_0 },
 	{ HDMI_V13_PHY_RSTOUT, HDMI_V14_PHY_RSTOUT },
+	{ HDMI_V13_CORE_RSTOUT, HDMI_V14_CORE_RSTOUT },
 	{ HDMI_V13_ACR_CON, HDMI_V14_ACR_CON },
 	{ HDMI_V13_ACR_MCTS0, HDMI_V14_ACR_MCTS0 },
 	{ HDMI_V13_ACR_CTS0, HDMI_V14_ACR_CTS0 },
@@ -894,7 +896,7 @@ static int hdmi_get_modes(struct drm_connector *connector)
 		return -ENODEV;
 
 	hdata->dvi_mode = !drm_detect_hdmi_monitor(edid);
-	DRM_DEV_DEBUG_KMS(hdata->dev, "%s : width[%d] x height[%d]\n",
+	DRM_DEV_INFO(hdata->dev, "%s : width[%d] x height[%d]\n",
 			  (hdata->dvi_mode ? "dvi monitor" : "hdmi monitor"),
 			  edid->width_cm, edid->height_cm);
 
@@ -917,7 +919,7 @@ static int hdmi_find_phy_conf(struct hdmi_context *hdata, u32 pixel_clock)
 		if (confs->data[i].pixel_clock == pixel_clock)
 			return i;
 
-	DRM_DEV_DEBUG_KMS(hdata->dev, "Could not find phy config for %d\n",
+	DRM_DEV_INFO(hdata->dev, "Could not find phy config for %d\n",
 			  pixel_clock);
 	return -EINVAL;
 }
@@ -928,7 +930,7 @@ static int hdmi_mode_valid(struct drm_connector *connector,
 	struct hdmi_context *hdata = connector_to_hdmi(connector);
 	int ret;
 
-	DRM_DEV_DEBUG_KMS(hdata->dev,
+	DRM_DEV_INFO(hdata->dev,
 			  "xres=%d, yres=%d, refresh=%d, intl=%d clock=%d\n",
 			  mode->hdisplay, mode->vdisplay,
 			  drm_mode_vrefresh(mode),
@@ -1024,7 +1026,7 @@ static bool hdmi_mode_fixup(struct drm_encoder *encoder,
 			DRM_INFO("desired mode doesn't exist so\n");
 			DRM_INFO("use the most suitable mode among modes.\n");
 
-			DRM_DEV_DEBUG_KMS(dev->dev,
+			DRM_DEV_INFO(dev->dev,
 					  "Adjusted Mode: [%d]x[%d] [%d]Hz\n",
 					  m->hdisplay, m->vdisplay,
 					  drm_mode_vrefresh(m));
@@ -1058,6 +1060,8 @@ static void hdmi_audio_config(struct hdmi_context *hdata)
 	u32 bit_ch = 1;
 	u32 data_num, val;
 	int i;
+
+	dev_info(hdata->dev, "%s\n", __func__);
 
 	switch (hdata->audio.params.sample_width) {
 	case 20:
@@ -1122,6 +1126,8 @@ static void hdmi_audio_control(struct hdmi_context *hdata)
 
 	if (hdata->dvi_mode)
 		return;
+
+	dev_info(hdata->dev, "%s: enable=%d\n", __func__, enable);
 
 	hdmi_reg_writeb(hdata, HDMI_AUI_CON, enable ?
 			HDMI_AVI_CON_EVERY_VSYNC : HDMI_AUI_CON_NO_TRAN);
@@ -1411,9 +1417,9 @@ static void hdmi_mode_apply(struct hdmi_context *hdata)
 
 static void hdmiphy_conf_reset(struct hdmi_context *hdata)
 {
-	hdmi_reg_writemask(hdata, HDMI_CORE_RSTOUT, 0, 1);
+	hdmi_reg_writemask(hdata, HDMI_CORE_RSTOUT, 0, HDMI_CORE_SW_RSTOUT);
 	usleep_range(10000, 12000);
-	hdmi_reg_writemask(hdata, HDMI_CORE_RSTOUT, ~0, 1);
+	hdmi_reg_writemask(hdata, HDMI_CORE_RSTOUT, ~0, HDMI_CORE_SW_RSTOUT);
 	usleep_range(10000, 12000);
 	hdmi_reg_writemask(hdata, HDMI_PHY_RSTOUT, ~0, HDMI_PHY_SW_RSTOUT);
 	usleep_range(10000, 12000);
@@ -1576,6 +1582,8 @@ static const struct drm_encoder_helper_funcs exynos_hdmi_encoder_helper_funcs = 
 static void hdmi_audio_shutdown(struct device *dev, void *data)
 {
 	struct hdmi_context *hdata = dev_get_drvdata(dev);
+	
+	dev_info(dev, "%s\n", __func__);
 
 	mutex_lock(&hdata->mutex);
 
@@ -1592,6 +1600,8 @@ static int hdmi_audio_hw_params(struct device *dev, void *data,
 				struct hdmi_codec_params *params)
 {
 	struct hdmi_context *hdata = dev_get_drvdata(dev);
+	
+	dev_info(dev, "%s\n", __func__);
 
 	if (daifmt->fmt != HDMI_I2S || daifmt->bit_clk_inv ||
 	    daifmt->frame_clk_inv || daifmt->bit_clk_master ||
@@ -1622,6 +1632,8 @@ static int hdmi_audio_mute(struct device *dev, void *data,
 {
 	struct hdmi_context *hdata = dev_get_drvdata(dev);
 
+	dev_info(dev, "%s: mute=%d\n", __func__, mute);
+
 	mutex_lock(&hdata->mutex);
 
 	hdata->audio.mute = mute;
@@ -1639,6 +1651,8 @@ static int hdmi_audio_get_eld(struct device *dev, void *data, uint8_t *buf,
 {
 	struct hdmi_context *hdata = dev_get_drvdata(dev);
 	struct drm_connector *connector = &hdata->connector;
+	
+	dev_info(dev, "%s\n", __func__);
 
 	memcpy(buf, connector->eld, min(sizeof(connector->eld), len));
 
@@ -1673,6 +1687,8 @@ static void hdmi_hotplug_work_func(struct work_struct *work)
 	struct hdmi_context *hdata;
 
 	hdata = container_of(work, struct hdmi_context, hotplug_work.work);
+	
+	dev_info(hdata->dev, "%s\n", __func__);
 
 	if (hdata->drm_dev)
 		drm_helper_hpd_irq_event(hdata->drm_dev);

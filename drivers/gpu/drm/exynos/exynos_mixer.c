@@ -107,7 +107,7 @@ struct mixer_context {
 	struct clk		*vp;
 	struct clk		*hdmi;
 	struct clk		*sclk_mixer;
-	struct clk		*sclk_hdmi;
+	struct clk		*mout_hdmi;
 	struct clk		*mout_mixer;
 	enum mixer_version_id	mxr_ver;
 	int			scan_value;
@@ -791,9 +791,9 @@ static int mixer_resources_init(struct mixer_context *mixer_ctx)
 		return PTR_ERR(mixer_ctx->hdmi);
 	}
 
-	mixer_ctx->sclk_hdmi = devm_clk_get(dev, "sclk_hdmi");
-	if (IS_ERR(mixer_ctx->sclk_hdmi)) {
-		dev_err(dev, "failed to get clock 'sclk_hdmi'\n");
+	mixer_ctx->mout_hdmi = devm_clk_get(dev, "mout_hdmi");
+	if (IS_ERR(mixer_ctx->mout_hdmi)) {
+		dev_err(dev, "failed to get clock 'mout_hdmi'\n");
 		return -ENODEV;
 	}
 	res = platform_get_resource(mixer_ctx->pdev, IORESOURCE_MEM, 0);
@@ -847,9 +847,9 @@ static int vp_resources_init(struct mixer_context *mixer_ctx)
 			return -ENODEV;
 		}
 
-		if (mixer_ctx->sclk_hdmi && mixer_ctx->mout_mixer)
+		if (mixer_ctx->mout_hdmi && mixer_ctx->mout_mixer)
 			clk_set_parent(mixer_ctx->mout_mixer,
-				       mixer_ctx->sclk_hdmi);
+				       mixer_ctx->mout_hdmi);
 	}
 
 	res = platform_get_resource(mixer_ctx->pdev, IORESOURCE_MEM, 1);

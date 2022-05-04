@@ -19,6 +19,19 @@
 			   0x40000000 0x10000000>;
 	};
 
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		linux,cma {
+			compatible = "shared-dma-pool";
+			reusable;
+			size = <0x4000000>;
+			linux,cma-default;
+		};
+	};
+
 	210_misc {
 		compatible = "210,misc";
 	};
@@ -40,9 +53,25 @@
 		compatible = "samsung,smdk-wm8960";
 		clocks = <&clocks FOUT_EPLL>;
 		clock-names = "fout_epll";
-		samsung,audio-codec = <&wm8960>;
+		samsung,audio-codec = <&wm8960>, <&hdmi>;
 		samsung,i2s-controller = <&i2s0>;
 		samsung,model = "s5pv210-wm8960";
+	};
+
+	fixed_33V: fixed_regulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "fixed-3.3V";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-always-on;
+	};
+
+	fixed_11V: fixed_regulator@1 {
+		compatible = "regulator-fixed";
+		regulator-name = "fixed-1.1V";
+		regulator-min-microvolt = <1100000>;
+		regulator-max-microvolt = <1100000>;
+		regulator-always-on;
 	};
 };
 
@@ -146,4 +175,43 @@
 &i2s0 {
 	#clock-cells = <1>;
 	status = "okay";
+};
+
+&i2c3 {
+	samsung,i2c-sda-delay = <100>;
+	samsung,i2c-max-bus-freq = <100000>;
+	samsung,i2c-slave-addr = <0x10>;
+	status = "okay";
+};
+
+&hdmi {
+	hpd-gpios = <&gph1 5 GPIO_ACTIVE_HIGH>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&hdmi_hpd>;
+	vdd-supply = <&fixed_11V>;
+	vdd_osc-supply = <&fixed_33V>;
+	vdd_pll-supply = <&fixed_11V>;
+	ddc = <&i2c1>;
+	status = "okay";
+
+	assigned-clocks = <&clocks CLK_HDMI>, <&clocks SCLK_HDMI>;
+	assigned-clock-rates = <0>, <0>;
+};
+
+&hdmicec {
+	pinctrl-names = "default";
+	pinctrl-0 = <&hdmi_cec>;
+	status = "okay";
+
+	assigned-clocks = <&clocks CLK_HDMI>;
+	assigned-clock-rates = <0>;
+};
+
+&mixer {
+	status = "okay";
+
+	assigned-clocks = <&clocks CLK_MIXER>, <&clocks CLK_HDMI>,
+					<&clocks CLK_VP>, <&clocks SCLK_MIXER>;
+	assigned-clock-rates = <0>, <0>,
+					<0>, <0>;
 };

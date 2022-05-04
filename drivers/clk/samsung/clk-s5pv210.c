@@ -555,8 +555,8 @@ static const struct samsung_gate_clock gate_clks[] __initconst = {
 	GATE(CLK_NANDXL, "nandxl", "dout_hclkp", CLK_GATE_IP1, 24, 0, 0),
 	GATE(CLK_USB_OTG, "usb_otg", "dout_hclkp", CLK_GATE_IP1, 16, 0, 0),
 	GATE(CLK_TVENC, "tvenc", "dout_hclkd", CLK_GATE_IP1, 10, 0, 0),
-	GATE(CLK_MIXER, "mixer", "dout_hclkd", CLK_GATE_IP1, 9, 0, 0),
-	GATE(CLK_VP, "vp", "dout_hclkd", CLK_GATE_IP1, 8, 0, 0),
+	GATE(CLK_MIXER, "mixer", "dout_hclkd", CLK_GATE_IP1, 9, CLK_IGNORE_UNUSED, 0),
+	GATE(CLK_VP, "vp", "dout_hclkd", CLK_GATE_IP1, 8, CLK_IGNORE_UNUSED, 0),
 	GATE(CLK_FIMD, "fimd", "dout_hclkd", CLK_GATE_IP1, 0, 0, 0),
 
 	GATE(CLK_HSMMC2, "hsmmc2", "dout_hclkp", CLK_GATE_IP2, 18, 0, 0),
@@ -614,7 +614,7 @@ static const struct samsung_gate_clock gate_clks[] __initconst = {
 	GATE(SCLK_CAM0, "sclk_cam0", "dout_cam0", CLK_SRC_MASK0, 3,
 			CLK_SET_RATE_PARENT, 0),
 	GATE(SCLK_MIXER, "sclk_mixer", "mout_mixer", CLK_SRC_MASK0, 1,
-			CLK_SET_RATE_PARENT, 0),
+			CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0),
 
 	GATE(SCLK_FIMC2, "sclk_fimc2", "dout_fimc2", CLK_SRC_MASK1, 4,
 			CLK_SET_RATE_PARENT, 0),
@@ -636,7 +636,7 @@ static const struct samsung_gate_clock s5pv210_gate_clks[] __initconst = {
 	GATE(CLK_NFCON, "nfcon", "dout_hclkp", CLK_GATE_IP1, 28, 0, 0),
 	GATE(CLK_CFCON, "cfcon", "dout_hclkp", CLK_GATE_IP1, 25, 0, 0),
 	GATE(CLK_USB_HOST, "usb_host", "dout_hclkp", CLK_GATE_IP1, 17, 0, 0),
-	GATE(CLK_HDMI, "hdmi", "dout_hclkd", CLK_GATE_IP1, 11, 0, 0),
+	GATE(CLK_HDMI, "hdmi", "dout_hclkd", CLK_GATE_IP1, 11, CLK_IGNORE_UNUSED, 0),
 	GATE(CLK_DSIM, "dsim", "dout_pclkd", CLK_GATE_IP1, 2, 0, 0),
 
 	GATE(CLK_TZIC3, "tzic3", "dout_hclkm", CLK_GATE_IP2, 31, 0, 0),
@@ -688,7 +688,7 @@ static const struct samsung_gate_clock s5pv210_gate_clks[] __initconst = {
 	GATE(SCLK_DAC, "sclk_dac", "mout_dac", CLK_SRC_MASK0, 2,
 			CLK_SET_RATE_PARENT, 0),
 	GATE(SCLK_HDMI, "sclk_hdmi", "mout_hdmi", CLK_SRC_MASK0, 0,
-			CLK_SET_RATE_PARENT, 0),
+			CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED, 0),
 };
 
 /* S5P6442-specific clock gates. */
@@ -716,6 +716,7 @@ static const struct samsung_clock_alias s5pv210_aliases[] __initconst = {
 	ALIAS(DOUT_APLL, NULL, "armclk"),
 	ALIAS(DOUT_HCLKM, NULL, "hclk_msys"),
 	ALIAS(MOUT_DMC0, NULL, "sclk_dmc0"),
+	ALIAS(DOUT_TBLK, NULL, "sclk_pixel"),
 };
 
 static const struct samsung_pll_rate_table s5pv210_epll_rates[] __initconst = {

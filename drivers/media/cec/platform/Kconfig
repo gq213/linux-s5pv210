@@ -54,7 +54,7 @@ config CEC_GPIO
 
 config CEC_SAMSUNG_S5P
 	tristate "Samsung S5P CEC driver"
-	depends on ARCH_EXYNOS || COMPILE_TEST
+	depends on ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
 	select CEC_CORE
 	select CEC_NOTIFIER
 	help

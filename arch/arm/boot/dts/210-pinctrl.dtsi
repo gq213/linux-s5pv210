@@ -519,4 +519,15 @@
 		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
 		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV2>;
 	};
+
+	hdmi_cec: hdmi-cec {
+		samsung,pins = "gph1-4";
+		samsung,pin-function = <EXYNOS_PIN_FUNC_3>;
+		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
+	};
+
+	hdmi_hpd: hdmi-hpd {
+		samsung,pins = "gph1-5";
+		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
+	};
 };

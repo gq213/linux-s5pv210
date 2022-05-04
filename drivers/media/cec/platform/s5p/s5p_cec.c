@@ -236,7 +236,7 @@ static int s5p_cec_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, cec);
 	pm_runtime_enable(dev);
 
-	dev_dbg(dev, "successfully probed\n");
+	dev_info(dev, "successfully probed\n");
 	return 0;
 
 err_notifier:

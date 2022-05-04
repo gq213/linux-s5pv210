@@ -143,7 +143,7 @@ static int smdk_init(struct snd_soc_pcm_runtime *runtime)
 
 SND_SOC_DAILINK_DEFS(pcm,
 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
-	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8960-hifi")),
+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "wm8960-hifi"), COMP_CODEC(NULL, "i2s-hifi")),
 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
 
 static struct snd_soc_dai_link smdk_dailink = {
@@ -193,12 +193,24 @@ static int smdk_audio_probe(struct platform_device *pdev)
 		return PTR_ERR(priv->clk_fout_epll);
 	}
 
-	smdk_dailink.codecs->of_node = of_parse_phandle(np,
+	smdk_dailink.codecs[0].of_node = of_parse_phandle(np,
 			"samsung,audio-codec", 0);
-	if (!smdk_dailink.codecs->of_node) {
+	if (!smdk_dailink.codecs[0].of_node) {
 		dev_err(&pdev->dev,
-			"Property 'samsung,audio-codec' missing or invalid\n");
+			"Property 'samsung,audio-codec[0]' missing or invalid\n");
 		return -EINVAL;
+	}
+
+	smdk_dailink.codecs[1].of_node = of_parse_phandle(np,
+			"samsung,audio-codec", 1);
+	if (!smdk_dailink.codecs[1].of_node) {
+		dev_err(&pdev->dev,
+			"Property 'samsung,audio-codec[1]' missing or invalid\n");
+		smdk_dailink.num_codecs -= 1;
+	} else if (!of_device_is_available(smdk_dailink.codecs[1].of_node)) {
+		dev_err(&pdev->dev,
+			"Property 'samsung,audio-codec[1]' disabled\n");
+		smdk_dailink.num_codecs -= 1;
 	}
 
 	smdk_dailink.cpus->of_node = of_parse_phandle(np,

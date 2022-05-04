@@ -1,0 +1,204 @@
+
+hdmi可以同时输出视频和音频信号
+
+4210
+GATE(CLK_MIXER, "mixer", "aclk160", GATE_IP_TV, 1, 0, 0),
+GATE(CLK_HDMI, "hdmi", "aclk160", GATE_IP_TV, 3, 0, 0),
+GATE(CLK_VP, "vp", "aclk160", GATE_IP_TV, 0, 0, 0),
+GATE(CLK_SCLK_MIXER, "sclk_mixer", "mout_mixer", SRC_MASK_TV, 4, 0, 0),
+
+PNAME(mout_mixer_p4210)	= { "sclk_dac", "sclk_hdmi", };
+GATE(CLK_SCLK_HDMI, "sclk_hdmi", "mout_hdmi", SRC_MASK_TV, 0, 0, 0),
+PNAME(mout_hdmi_p)	= { "sclk_pixel", "sclk_hdmiphy", };
+DIV(CLK_SCLK_PIXEL, "sclk_pixel", "sclk_vpll", DIV_TV, 0, 4),
+
+210
+GATE(CLK_MIXER, "mixer", "dout_hclkd", CLK_GATE_IP1, 9, 0, 0),
+GATE(CLK_HDMI, "hdmi", "dout_hclkd", CLK_GATE_IP1, 11, 0, 0),
+GATE(CLK_VP, "vp", "dout_hclkd", CLK_GATE_IP1, 8, 0, 0),
+GATE(SCLK_MIXER, "sclk_mixer", "mout_mixer", CLK_SRC_MASK0, 1, CLK_SET_RATE_PARENT, 0),
+
+static const char *const mout_mixer_p[] __initconst = {
+	"mout_dac",
+	"mout_hdmi"
+};
+static const char *const mout_hdmi_p[] __initconst = {
+	"dout_tblk",
+	"sclk_hdmiphy"
+};
+DIV(DOUT_TBLK, "dout_tblk", "mout_vpll", CLK_DIV1, 0, 4),
+ALIAS(DOUT_TBLK, NULL, "sclk_pixel"),
+
+GATE(SCLK_HDMI, "sclk_hdmi", "mout_hdmi", CLK_SRC_MASK0, 0, CLK_SET_RATE_PARENT, 0),
+
+
+
+mixer
+
+devm_clk_get(dev, "mixer");
+enable/disable
+
+devm_clk_get(dev, "hdmi");
+enable/disable
+
+devm_clk_get(dev, "vp");
+enable/disable
+
+devm_clk_get(dev, "sclk_mixer");
+enable/disable
+
+devm_clk_get(dev, "mout_mixer");
+
+devm_clk_get(dev, "mout_hdmi");
+
+clk_set_parent(mixer_ctx->mout_mixer, mixer_ctx->mout_hdmi);
+
+
+
+hdmi
+
+devm_gpiod_get(dev, "hpd", GPIOD_IN);
+
+hdmi_clk_init
+static const char * const hdmi_clk_gates4[] = {
+	"hdmi", "sclk_hdmi"
+};
+static const char * const hdmi_clk_muxes4[] = {
+	"dout_tblk", "sclk_hdmiphy", "mout_hdmi"
+};
+hdmi_clks_get(hdata, &drv_data->clk_gates, hdata->clk_gates);
+hdmi_clks_get(hdata, &drv_data->clk_muxes, hdata->clk_muxes);
+
+clk_set_parent("mout_hdmi", "dout_tblk");		// false	54M,fout_vpll
+clk_set_parent("mout_hdmi", "sclk_hdmiphy");	// true		27M,sclk_hdmi27m
+
+hdmi_clk_disable_gates
+hdmi_clk_enable_gates
+"hdmi", "sclk_hdmi"
+
+path
+       fout_mpll                      1        1        0   667000000          0     0  50000         Y
+          mout_mpll                   5        5        0   667000000          0     0  50000         Y
+             mout_dsys                1        1        0   667000000          0     0  50000         Y
+                dout_hclkd            1        2        0   166750000          0     0  50000         Y
+                   vp                 0        0        0   166750000          0     0  50000         Y
+                   mixer              0        0        0   166750000          0     0  50000         Y
+                   hdmi               0        0        0   166750000          0     0  50000         Y
+off
+ sclk_hdmiphy                         0        0        0    27000000          0     0  50000         Y
+ xusbxti                              2        2        0    24000000          0     0  50000         Y
+    fin_pll                           2        2        0    24000000          0     0  50000         Y
+       mout_vpllsrc                   0        0        0    24000000          0     0  50000         Y
+          fout_vpll                   0        0        0    54000000          0     0  50000         Y
+             mout_vpll                0        0        0    54000000          0     0  50000         Y
+                dout_tblk             0        0        0    54000000          0     0  50000         Y
+                   mout_hdmi          0        0        0    54000000          0     0  50000         Y
+                      mout_mixer       0        0        0    54000000          0     0  50000         Y
+                         sclk_mixer       0        0        0    54000000          0     0  50000         Y
+                      sclk_hdmi       0        0        0    54000000          0     0  50000         Y
+on
+ sclk_hdmiphy                         0        0        0    27000000          0     0  50000         Y
+    mout_hdmi                         0        0        0    27000000          0     0  50000         Y
+       mout_mixer                     0        0        0    27000000          0     0  50000         Y
+          sclk_mixer                  0        0        0    27000000          0     0  50000         Y
+       sclk_hdmi                      0        0        0    27000000          0     0  50000         Y
+ xusbxti                              2        2        0    24000000          0     0  50000         Y
+    fin_pll                           2        2        0    24000000          0     0  50000         Y
+       mout_vpllsrc                   0        0        0    24000000          0     0  50000         Y
+          fout_vpll                   0        0        0    54000000          0     0  50000         Y
+             mout_vpll                0        0        0    54000000          0     0  50000         Y
+                dout_tblk             0        0        0    54000000          0     0  50000         Y
+
+SCLK_MIXER	MIXER clock			54MHz (TV) ~148.5MHz (HDMI) 	SCLKVPLL, HDMI PHY output
+SCLK_HDMI	HDMI LINK clock 	~148.5MHz 						All possible clock sources
+SCLK_PIXEL	HDMI PIXEL clock 	~148.5MHz 						All possible clock sources
+
+/sys/kernel/debug/dri/0/HDMI-A-1/edid_override
+
+板子i2c少贴电阻，不通，使用其他设备从显示器读取的edid
+echo phlc107 > /sys/module/drm/parameters/edid_firmware
+
+1920*1080*32/8
+0xff
+tr '\000' '\377' < /dev/zero | dd of=/dev/fb0 bs=1k count=8100
+0x00
+dd if=/dev/zero of=/dev/fb0 bs=1k count=8100
+
+[   63.765800] exynos-hdmi fa100000.hdmi: hdmi_hotplug_work_func
+[   63.765989] [drm] edid_load: name=phlc107
+[   63.769786] [drm] Got external EDID base block and 1 extension from "phlc107" for connector "HDMI-A-1"
+[   63.786154] exynos-hdmi fa100000.hdmi: [drm:hdmi_get_modes] hdmi monitor : width[52] x height[29]
+[   63.790787] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1920, yres=1080, refresh=60, intl=0 clock=148500000
+[   63.799619] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=480, refresh=60, intl=0 clock=27000000
+[   63.809661] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1280, yres=720, refresh=60, intl=0 clock=74250000
+[   63.819654] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=576, refresh=50, intl=0 clock=27000000
+[   63.829646] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1440, yres=900, refresh=60, intl=0 clock=88750000
+[   63.839703] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 88750000
+[   63.848680] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1440, yres=900, refresh=75, intl=0 clock=136750000
+[   63.858839] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 136750000
+[   63.867921] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1680, yres=1050, refresh=60, intl=0 clock=119000000
+[   63.878155] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 119000000
+[   63.887217] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1280, yres=1024, refresh=60, intl=0 clock=108000000
+[   63.897459] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 108000000
+[   63.906527] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1280, yres=960, refresh=60, intl=0 clock=108000000
+[   63.916685] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 108000000
+[   63.925741] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=800, yres=600, refresh=60, intl=0 clock=40000000
+[   63.935744] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 40000000
+[   63.944728] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=640, yres=480, refresh=75, intl=0 clock=31500000
+[   63.954718] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 31500000
+[   63.963722] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=640, yres=480, refresh=73, intl=0 clock=31500000
+[   63.973698] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 31500000
+[   63.982677] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=640, yres=480, refresh=67, intl=0 clock=30240000
+[   63.992671] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 30240000
+[   64.001651] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=640, yres=480, refresh=60, intl=0 clock=25175000
+[   64.011641] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 25175000
+[   64.020626] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=400, refresh=70, intl=0 clock=28320000
+[   64.030616] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 28320000
+[   64.039600] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1280, yres=1024, refresh=75, intl=0 clock=135000000
+[   64.049843] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 135000000
+[   64.058910] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1024, yres=768, refresh=75, intl=0 clock=78750000
+[   64.068985] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 78750000
+[   64.077978] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1024, yres=768, refresh=60, intl=0 clock=65000000
+[   64.088043] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 65000000
+[   64.097030] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=800, yres=600, refresh=75, intl=0 clock=49500000
+[   64.107019] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 49500000
+[   64.116002] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=640, yres=480, refresh=60, intl=0 clock=25175000
+[   64.125992] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 25175000
+[   64.134964] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=480, refresh=60, intl=0 clock=27000000
+[   64.144970] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=480, refresh=60, intl=0 clock=27000000
+[   64.154961] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1920, yres=1080, refresh=60, intl=1 clock=74250000
+[   64.165121] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=480, refresh=60, intl=1 clock=13500000
+[   64.175108] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 13500000
+[   64.184095] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=480, refresh=60, intl=1 clock=13500000
+[   64.194082] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 13500000
+[   64.203066] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1920, yres=1080, refresh=60, intl=0 clock=148500000
+[   64.213321] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=576, refresh=50, intl=0 clock=27000000
+[   64.223309] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=576, refresh=50, intl=0 clock=27000000
+[   64.233300] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1280, yres=720, refresh=50, intl=0 clock=74250000
+[   64.243375] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1920, yres=1080, refresh=50, intl=1 clock=74250000
+[   64.253535] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=576, refresh=50, intl=1 clock=13500000
+[   64.263518] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 13500000
+[   64.272500] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=576, refresh=50, intl=1 clock=13500000
+[   64.282490] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 13500000
+[   64.291483] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1920, yres=1080, refresh=50, intl=0 clock=148500000
+[   64.301732] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1280, yres=720, refresh=60, intl=0 clock=74250000
+[   64.311795] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1920, yres=1080, refresh=60, intl=0 clock=148352000
+[   64.322038] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 148352000
+[   64.331103] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=480, refresh=60, intl=0 clock=27027000
+[   64.341096] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1280, yres=720, refresh=60, intl=0 clock=74176000
+[   64.351172] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=640, yres=480, refresh=60, intl=0 clock=25200000
+[   64.361159] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 25200000
+[   64.370143] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=480, refresh=60, intl=0 clock=27027000
+[   64.380137] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1920, yres=1080, refresh=60, intl=1 clock=74176000
+[   64.390296] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=480, refresh=60, intl=1 clock=13514000
+[   64.400293] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 13514000
+[   64.409267] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=720, yres=480, refresh=60, intl=1 clock=13514000
+[   64.419260] exynos-hdmi fa100000.hdmi: [drm:hdmi_find_phy_conf] Could not find phy config for 13514000
+[   64.428302] exynos-drm exynos-drm: [drm:exynos_drm_fbdev_create] surface width(1920), height(1080) and bpp(32), depth(24)
+[   64.438854] exynos-mixer f9200000.mixer: [drm:exynos_drm_gem_create] exynos_gem->size(0x7e9000)
+[   64.525641] exynos-hdmi fa100000.hdmi: hdmi_audio_config
+[   64.525686] exynos-hdmi fa100000.hdmi: hdmi_audio_control: enable=1
+[   64.542667] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1920, yres=1080, refresh=60, intl=0 clock=148500000
+[   64.588994] Console: switching to colour frame buffer device 240x67
+[   64.589052] exynos-hdmi fa100000.hdmi: [drm:hdmi_mode_valid] xres=1920, yres=1080, refresh=60, intl=0 clock=148500000
+[   64.654502] exynos-drm exynos-drm: [drm] fb0: exynosdrmfb frame buffer device

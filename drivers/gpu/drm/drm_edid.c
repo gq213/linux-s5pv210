@@ -2093,8 +2093,8 @@ struct edid *drm_get_edid(struct drm_connector *connector,
 	if (connector->force == DRM_FORCE_OFF)
 		return NULL;
 
-	if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
-		return NULL;
+	/* if (connector->force == DRM_FORCE_UNSPECIFIED && !drm_probe_ddc(adapter))
+		return NULL; */
 
 	edid = drm_do_get_edid(connector, drm_do_probe_ddc_edid, adapter);
 	drm_connector_update_edid_property(connector, edid);
