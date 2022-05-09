@@ -24,6 +24,7 @@
 	#size-cells = <1>;
 
 	aliases {
+		i2c0 = &i2c0;
 		i2c1 = &i2c1;
 		i2c3 = &i2c3;
 		i2s0 = &i2s0;
@@ -109,6 +110,20 @@
 			#dma-cells = <1>;
 			#dma-channels = <8>;
 			#dma-requests = <32>;
+		};
+
+		i2c0: i2c@e1800000 {
+			compatible = "samsung,s3c2440-i2c";
+			reg = <0xe1800000 0x1000>;
+			interrupt-parent = <&vic1>;
+			interrupts = <14>;
+			clocks = <&clocks CLK_I2C0>;
+			clock-names = "i2c";
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c0_bus>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
 		};
 
 		clk_audss: clock-controller@eee10000 {

@@ -1,0 +1,28 @@
+[root@buildroot /]# cat /sys/kernel/debug/regulator/regulator_summary 
+ regulator                      use open bypass  opmode voltage current     min     max
+---------------------------------------------------------------------------------------
+ regulator-dummy                  6    5      0 unknown     0mV     0mA     0mV     0mV 
+    ec000000.hsotg-vusb_a         1                                 0mA     0mV     0mV
+    ec000000.hsotg-vusb_d         1                                 0mA     0mV     0mV
+    88000000.ethernet-vcc         1                                 0mA     0mV     0mV
+    backlight-power               1                                 0mA     0mV     0mV
+    ec100000.usbphy-vbus          1                                 0mA     0mV     0mV
+ vbat                            13   13      0 unknown  5000mV     0mA  5000mV  5000mV 
+    vrtc                          1    0      0  normal     0mV     0mA  1800mV  1800mV 
+    vio                           1    0      0  normal  1800mV     0mA     0mV     0mV 
+    vdd1                          1    0      0  normal  1200mV     0mA   600mV  1500mV 
+    vdd2                          1    0      0  normal  1100mV     0mA   600mV  1500mV 
+    vdig1                         1    0      0  normal  1800mV     0mA     0mV     0mV 
+    vdig2                         1    2      0  normal  1100mV     0mA     0mV     0mV 
+       fa100000.hdmi-vdd_pll      0                                 0mA     0mV     0mV
+       fa100000.hdmi-vdd          0                                 0mA     0mV     0mV
+    vpll                          1    0      0  normal  1100mV     0mA     0mV     0mV 
+    vdac                          1    0      0  normal  2600mV     0mA     0mV     0mV 
+    vaux1                         1    0      0  normal  2800mV     0mA     0mV     0mV 
+    vaux2                         1    1      0  normal  3300mV     0mA     0mV     0mV 
+       fa100000.hdmi-vdd_osc      0                                 0mA     0mV     0mV
+    vaux33                        1    0      0  normal  3300mV     0mA     0mV     0mV 
+    vmmc                          2    1      0  normal  3000mV     0mA     0mV     0mV 
+       eb000000.sdhci-vmmc        1                                 0mA  3000mV  3100mV
+    vbb                           0    0      0 standby  3000mV     0mA     0mV     0mV 
+ vdd3                             0    0      0 standby  5000mV     0mA  5000mV  5000mV 

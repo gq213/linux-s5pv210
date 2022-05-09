@@ -5,8 +5,8 @@ amixer controls
 numid=12,iface=MIXER,name='Headphone Playback ZC Switch'
 numid=11,iface=MIXER,name='Headphone Playback Volume'
 numid=17,iface=MIXER,name='PCM Playback -6dB Switch'
-numid=57,iface=MIXER,name='Mono Output Mixer Left Switch'
-numid=58,iface=MIXER,name='Mono Output Mixer Right Switch'
+numid=61,iface=MIXER,name='Mono Output Mixer Left Switch'
+numid=62,iface=MIXER,name='Mono Output Mixer Right Switch'
 numid=41,iface=MIXER,name='ADC Data Output Select'
 numid=19,iface=MIXER,name='ADC High Pass Filter Switch'
 numid=36,iface=MIXER,name='ADC PCM Capture Volume'
@@ -30,27 +30,31 @@ numid=28,iface=MIXER,name='ALC Target'
 numid=21,iface=MIXER,name='DAC Deemphasis Switch'
 numid=42,iface=MIXER,name='DAC Mono Mix'
 numid=20,iface=MIXER,name='DAC Polarity'
-numid=47,iface=MIXER,name='Left Boost Mixer LINPUT2 Virtual SW'
-numid=48,iface=MIXER,name='Left Boost Mixer LINPUT3 Virtual SW'
+numid=47,iface=MIXER,name='Left Boost Mixer LINPUT1 Switch'
+numid=48,iface=MIXER,name='Left Boost Mixer LINPUT2 Virtual SW'
+numid=49,iface=MIXER,name='Left Boost Mixer LINPUT3 Virtual SW'
 numid=9,iface=MIXER,name='Left Input Boost Mixer LINPUT1 Volume'
 numid=5,iface=MIXER,name='Left Input Boost Mixer LINPUT2 Volume'
 numid=4,iface=MIXER,name='Left Input Boost Mixer LINPUT3 Volume'
-numid=53,iface=MIXER,name='Left Output Mixer Boost Bypass Switch'
+numid=53,iface=MIXER,name='Left Input Mixer Boost Switch'
+numid=57,iface=MIXER,name='Left Output Mixer Boost Bypass Switch'
 numid=37,iface=MIXER,name='Left Output Mixer Boost Bypass Volume'
-numid=52,iface=MIXER,name='Left Output Mixer LINPUT3 Switch'
+numid=56,iface=MIXER,name='Left Output Mixer LINPUT3 Switch'
 numid=38,iface=MIXER,name='Left Output Mixer LINPUT3 Volume'
-numid=51,iface=MIXER,name='Left Output Mixer PCM Playback Switch'
+numid=55,iface=MIXER,name='Left Output Mixer PCM Playback Switch'
 numid=35,iface=MIXER,name='Noise Gate Switch'
 numid=34,iface=MIXER,name='Noise Gate Threshold'
-numid=49,iface=MIXER,name='Right Boost Mixer RINPUT2 Virtual SW'
-numid=50,iface=MIXER,name='Right Boost Mixer RINPUT3 Virtual SW'
+numid=50,iface=MIXER,name='Right Boost Mixer RINPUT1 Switch'
+numid=51,iface=MIXER,name='Right Boost Mixer RINPUT2 Virtual SW'
+numid=52,iface=MIXER,name='Right Boost Mixer RINPUT3 Virtual SW'
 numid=8,iface=MIXER,name='Right Input Boost Mixer RINPUT1 Volume'
 numid=7,iface=MIXER,name='Right Input Boost Mixer RINPUT2 Volume'
 numid=6,iface=MIXER,name='Right Input Boost Mixer RINPUT3 Volume'
-numid=56,iface=MIXER,name='Right Output Mixer Boost Bypass Switch'
+numid=54,iface=MIXER,name='Right Input Mixer Boost Switch'
+numid=60,iface=MIXER,name='Right Output Mixer Boost Bypass Switch'
 numid=39,iface=MIXER,name='Right Output Mixer Boost Bypass Volume'
-numid=54,iface=MIXER,name='Right Output Mixer PCM Playback Switch'
-numid=55,iface=MIXER,name='Right Output Mixer RINPUT3 Switch'
+numid=58,iface=MIXER,name='Right Output Mixer PCM Playback Switch'
+numid=59,iface=MIXER,name='Right Output Mixer RINPUT3 Switch'
 numid=40,iface=MIXER,name='Right Output Mixer RINPUT3 Volume'
 numid=16,iface=MIXER,name='Speaker AC Volume'
 numid=15,iface=MIXER,name='Speaker DC Volume'
@@ -60,7 +64,6 @@ numid=46,iface=PCM,name='ELD'
 numid=45,iface=PCM,name='IEC958 Playback Default'
 numid=44,iface=PCM,name='IEC958 Playback Mask'
 numid=43,iface=PCM,name='Playback Channel Map'
-[root@buildroot /]# 
 
 amixer contents
 numid=12,iface=MIXER,name='Headphone Playback ZC Switch'
@@ -73,10 +76,10 @@ numid=11,iface=MIXER,name='Headphone Playback Volume'
 numid=17,iface=MIXER,name='PCM Playback -6dB Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
-numid=57,iface=MIXER,name='Mono Output Mixer Left Switch'
+numid=61,iface=MIXER,name='Mono Output Mixer Left Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
-numid=58,iface=MIXER,name='Mono Output Mixer Right Switch'
+numid=62,iface=MIXER,name='Mono Output Mixer Right Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=41,iface=MIXER,name='ADC Data Output Select'
@@ -175,10 +178,13 @@ numid=20,iface=MIXER,name='DAC Polarity'
   ; Item #2 'Right Inverted'
   ; Item #3 'Stereo Inversion'
   : values=0
-numid=47,iface=MIXER,name='Left Boost Mixer LINPUT2 Virtual SW'
+numid=47,iface=MIXER,name='Left Boost Mixer LINPUT1 Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=on
+numid=48,iface=MIXER,name='Left Boost Mixer LINPUT2 Virtual SW'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
-numid=48,iface=MIXER,name='Left Boost Mixer LINPUT3 Virtual SW'
+numid=49,iface=MIXER,name='Left Boost Mixer LINPUT3 Virtual SW'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=9,iface=MIXER,name='Left Input Boost Mixer LINPUT1 Volume'
@@ -198,21 +204,24 @@ numid=4,iface=MIXER,name='Left Input Boost Mixer LINPUT3 Volume'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=7,step=0
   : values=0
   | dBscale-min=-15.00dB,step=3.00dB,mute=1
-numid=53,iface=MIXER,name='Left Output Mixer Boost Bypass Switch'
+numid=53,iface=MIXER,name='Left Input Mixer Boost Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=off
+numid=57,iface=MIXER,name='Left Output Mixer Boost Bypass Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=37,iface=MIXER,name='Left Output Mixer Boost Bypass Volume'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=7,step=0
   : values=2
   | dBscale-min=-21.00dB,step=3.00dB,mute=0
-numid=52,iface=MIXER,name='Left Output Mixer LINPUT3 Switch'
+numid=56,iface=MIXER,name='Left Output Mixer LINPUT3 Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=38,iface=MIXER,name='Left Output Mixer LINPUT3 Volume'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=7,step=0
   : values=2
   | dBscale-min=-21.00dB,step=3.00dB,mute=0
-numid=51,iface=MIXER,name='Left Output Mixer PCM Playback Switch'
+numid=55,iface=MIXER,name='Left Output Mixer PCM Playback Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=35,iface=MIXER,name='Noise Gate Switch'
@@ -221,10 +230,13 @@ numid=35,iface=MIXER,name='Noise Gate Switch'
 numid=34,iface=MIXER,name='Noise Gate Threshold'
   ; type=INTEGER,access=rw------,values=1,min=0,max=31,step=0
   : values=0
-numid=49,iface=MIXER,name='Right Boost Mixer RINPUT2 Virtual SW'
+numid=50,iface=MIXER,name='Right Boost Mixer RINPUT1 Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=on
+numid=51,iface=MIXER,name='Right Boost Mixer RINPUT2 Virtual SW'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
-numid=50,iface=MIXER,name='Right Boost Mixer RINPUT3 Virtual SW'
+numid=52,iface=MIXER,name='Right Boost Mixer RINPUT3 Virtual SW'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=8,iface=MIXER,name='Right Input Boost Mixer RINPUT1 Volume'
@@ -244,17 +256,20 @@ numid=6,iface=MIXER,name='Right Input Boost Mixer RINPUT3 Volume'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=7,step=0
   : values=0
   | dBscale-min=-15.00dB,step=3.00dB,mute=1
-numid=56,iface=MIXER,name='Right Output Mixer Boost Bypass Switch'
+numid=54,iface=MIXER,name='Right Input Mixer Boost Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=off
+numid=60,iface=MIXER,name='Right Output Mixer Boost Bypass Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=39,iface=MIXER,name='Right Output Mixer Boost Bypass Volume'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=7,step=0
   : values=2
   | dBscale-min=-21.00dB,step=3.00dB,mute=0
-numid=54,iface=MIXER,name='Right Output Mixer PCM Playback Switch'
+numid=58,iface=MIXER,name='Right Output Mixer PCM Playback Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
-numid=55,iface=MIXER,name='Right Output Mixer RINPUT3 Switch'
+numid=59,iface=MIXER,name='Right Output Mixer RINPUT3 Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=40,iface=MIXER,name='Right Output Mixer RINPUT3 Volume'
@@ -295,8 +310,8 @@ dapm_pop_time            eee30000.i2s             wm8960.1-001a
 
 echo 20 > /sys/kernel/debug/asoc/s5pv210-wm8960/dapm_pop_time
 
-amixer cset numid=51,iface=MIXER,name='Left Output Mixer PCM Playback Switch' 1;
-amixer cset numid=54,iface=MIXER,name='Right Output Mixer PCM Playback Switch' 1;
+amixer cset numid=55,iface=MIXER,name='Left Output Mixer PCM Playback Switch' 1;
+amixer cset numid=58,iface=MIXER,name='Right Output Mixer PCM Playback Switch' 1;
 amixer cset numid=11,iface=MIXER,name='Headphone Playback Volume' 121 121;
 
 echo phlc107 > /sys/module/drm/parameters/edid_firmware

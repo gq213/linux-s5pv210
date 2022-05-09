@@ -118,8 +118,8 @@ amixer controls
 numid=12,iface=MIXER,name='Headphone Playback ZC Switch'
 numid=11,iface=MIXER,name='Headphone Playback Volume'
 numid=17,iface=MIXER,name='PCM Playback -6dB Switch'
-numid=53,iface=MIXER,name='Mono Output Mixer Left Switch'
-numid=54,iface=MIXER,name='Mono Output Mixer Right Switch'
+numid=57,iface=MIXER,name='Mono Output Mixer Left Switch'
+numid=58,iface=MIXER,name='Mono Output Mixer Right Switch'
 numid=41,iface=MIXER,name='ADC Data Output Select'
 numid=19,iface=MIXER,name='ADC High Pass Filter Switch'
 numid=36,iface=MIXER,name='ADC PCM Capture Volume'
@@ -143,27 +143,31 @@ numid=28,iface=MIXER,name='ALC Target'
 numid=21,iface=MIXER,name='DAC Deemphasis Switch'
 numid=42,iface=MIXER,name='DAC Mono Mix'
 numid=20,iface=MIXER,name='DAC Polarity'
-numid=43,iface=MIXER,name='Left Boost Mixer LINPUT2 Virtual SW'
-numid=44,iface=MIXER,name='Left Boost Mixer LINPUT3 Virtual SW'
+numid=43,iface=MIXER,name='Left Boost Mixer LINPUT1 Switch'
+numid=44,iface=MIXER,name='Left Boost Mixer LINPUT2 Virtual SW'
+numid=45,iface=MIXER,name='Left Boost Mixer LINPUT3 Virtual SW'
 numid=9,iface=MIXER,name='Left Input Boost Mixer LINPUT1 Volume'
 numid=5,iface=MIXER,name='Left Input Boost Mixer LINPUT2 Volume'
 numid=4,iface=MIXER,name='Left Input Boost Mixer LINPUT3 Volume'
-numid=49,iface=MIXER,name='Left Output Mixer Boost Bypass Switch'
+numid=49,iface=MIXER,name='Left Input Mixer Boost Switch'
+numid=53,iface=MIXER,name='Left Output Mixer Boost Bypass Switch'
 numid=37,iface=MIXER,name='Left Output Mixer Boost Bypass Volume'
-numid=48,iface=MIXER,name='Left Output Mixer LINPUT3 Switch'
+numid=52,iface=MIXER,name='Left Output Mixer LINPUT3 Switch'
 numid=38,iface=MIXER,name='Left Output Mixer LINPUT3 Volume'
-numid=47,iface=MIXER,name='Left Output Mixer PCM Playback Switch'
+numid=51,iface=MIXER,name='Left Output Mixer PCM Playback Switch'
 numid=35,iface=MIXER,name='Noise Gate Switch'
 numid=34,iface=MIXER,name='Noise Gate Threshold'
-numid=45,iface=MIXER,name='Right Boost Mixer RINPUT2 Virtual SW'
-numid=46,iface=MIXER,name='Right Boost Mixer RINPUT3 Virtual SW'
+numid=46,iface=MIXER,name='Right Boost Mixer RINPUT1 Switch'
+numid=47,iface=MIXER,name='Right Boost Mixer RINPUT2 Virtual SW'
+numid=48,iface=MIXER,name='Right Boost Mixer RINPUT3 Virtual SW'
 numid=8,iface=MIXER,name='Right Input Boost Mixer RINPUT1 Volume'
 numid=7,iface=MIXER,name='Right Input Boost Mixer RINPUT2 Volume'
 numid=6,iface=MIXER,name='Right Input Boost Mixer RINPUT3 Volume'
-numid=52,iface=MIXER,name='Right Output Mixer Boost Bypass Switch'
+numid=50,iface=MIXER,name='Right Input Mixer Boost Switch'
+numid=56,iface=MIXER,name='Right Output Mixer Boost Bypass Switch'
 numid=39,iface=MIXER,name='Right Output Mixer Boost Bypass Volume'
-numid=50,iface=MIXER,name='Right Output Mixer PCM Playback Switch'
-numid=51,iface=MIXER,name='Right Output Mixer RINPUT3 Switch'
+numid=54,iface=MIXER,name='Right Output Mixer PCM Playback Switch'
+numid=55,iface=MIXER,name='Right Output Mixer RINPUT3 Switch'
 numid=40,iface=MIXER,name='Right Output Mixer RINPUT3 Volume'
 numid=16,iface=MIXER,name='Speaker AC Volume'
 numid=15,iface=MIXER,name='Speaker DC Volume'
@@ -181,10 +185,10 @@ numid=11,iface=MIXER,name='Headphone Playback Volume'
 numid=17,iface=MIXER,name='PCM Playback -6dB Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
-numid=53,iface=MIXER,name='Mono Output Mixer Left Switch'
+numid=57,iface=MIXER,name='Mono Output Mixer Left Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
-numid=54,iface=MIXER,name='Mono Output Mixer Right Switch'
+numid=58,iface=MIXER,name='Mono Output Mixer Right Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=41,iface=MIXER,name='ADC Data Output Select'
@@ -283,10 +287,13 @@ numid=20,iface=MIXER,name='DAC Polarity'
   ; Item #2 'Right Inverted'
   ; Item #3 'Stereo Inversion'
   : values=0
-numid=43,iface=MIXER,name='Left Boost Mixer LINPUT2 Virtual SW'
+numid=43,iface=MIXER,name='Left Boost Mixer LINPUT1 Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=on
+numid=44,iface=MIXER,name='Left Boost Mixer LINPUT2 Virtual SW'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
-numid=44,iface=MIXER,name='Left Boost Mixer LINPUT3 Virtual SW'
+numid=45,iface=MIXER,name='Left Boost Mixer LINPUT3 Virtual SW'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=9,iface=MIXER,name='Left Input Boost Mixer LINPUT1 Volume'
@@ -306,21 +313,24 @@ numid=4,iface=MIXER,name='Left Input Boost Mixer LINPUT3 Volume'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=7,step=0
   : values=0
   | dBscale-min=-15.00dB,step=3.00dB,mute=1
-numid=49,iface=MIXER,name='Left Output Mixer Boost Bypass Switch'
+numid=49,iface=MIXER,name='Left Input Mixer Boost Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=off
+numid=53,iface=MIXER,name='Left Output Mixer Boost Bypass Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=37,iface=MIXER,name='Left Output Mixer Boost Bypass Volume'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=7,step=0
   : values=2
   | dBscale-min=-21.00dB,step=3.00dB,mute=0
-numid=48,iface=MIXER,name='Left Output Mixer LINPUT3 Switch'
+numid=52,iface=MIXER,name='Left Output Mixer LINPUT3 Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=38,iface=MIXER,name='Left Output Mixer LINPUT3 Volume'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=7,step=0
   : values=2
   | dBscale-min=-21.00dB,step=3.00dB,mute=0
-numid=47,iface=MIXER,name='Left Output Mixer PCM Playback Switch'
+numid=51,iface=MIXER,name='Left Output Mixer PCM Playback Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=35,iface=MIXER,name='Noise Gate Switch'
@@ -329,10 +339,13 @@ numid=35,iface=MIXER,name='Noise Gate Switch'
 numid=34,iface=MIXER,name='Noise Gate Threshold'
   ; type=INTEGER,access=rw------,values=1,min=0,max=31,step=0
   : values=0
-numid=45,iface=MIXER,name='Right Boost Mixer RINPUT2 Virtual SW'
+numid=46,iface=MIXER,name='Right Boost Mixer RINPUT1 Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=on
+numid=47,iface=MIXER,name='Right Boost Mixer RINPUT2 Virtual SW'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
-numid=46,iface=MIXER,name='Right Boost Mixer RINPUT3 Virtual SW'
+numid=48,iface=MIXER,name='Right Boost Mixer RINPUT3 Virtual SW'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=8,iface=MIXER,name='Right Input Boost Mixer RINPUT1 Volume'
@@ -352,17 +365,20 @@ numid=6,iface=MIXER,name='Right Input Boost Mixer RINPUT3 Volume'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=7,step=0
   : values=0
   | dBscale-min=-15.00dB,step=3.00dB,mute=1
-numid=52,iface=MIXER,name='Right Output Mixer Boost Bypass Switch'
+numid=50,iface=MIXER,name='Right Input Mixer Boost Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=off
+numid=56,iface=MIXER,name='Right Output Mixer Boost Bypass Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=39,iface=MIXER,name='Right Output Mixer Boost Bypass Volume'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=7,step=0
   : values=2
   | dBscale-min=-21.00dB,step=3.00dB,mute=0
-numid=50,iface=MIXER,name='Right Output Mixer PCM Playback Switch'
+numid=54,iface=MIXER,name='Right Output Mixer PCM Playback Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
-numid=51,iface=MIXER,name='Right Output Mixer RINPUT3 Switch'
+numid=55,iface=MIXER,name='Right Output Mixer RINPUT3 Switch'
   ; type=BOOLEAN,access=rw------,values=1
   : values=off
 numid=40,iface=MIXER,name='Right Output Mixer RINPUT3 Volume'
@@ -448,8 +464,8 @@ WM8960_POWER3	0x2f	2	ROMIX
 WM8960_LOUT1	0x02	6:0	LOUT1VOL,0x79=0db
 WM8960_ROUT1	0x03	6:0	ROUT1VOL,0x79=0db
 
-amixer cset numid=47,iface=MIXER,name='Left Output Mixer PCM Playback Switch' 1;
-amixer cset numid=50,iface=MIXER,name='Right Output Mixer PCM Playback Switch' 1;
+amixer cset numid=51,iface=MIXER,name='Left Output Mixer PCM Playback Switch' 1;
+amixer cset numid=54,iface=MIXER,name='Right Output Mixer PCM Playback Switch' 1;
 amixer cset numid=11,iface=MIXER,name='Headphone Playback Volume' 121 121;
 
 aplay 2329.wav
@@ -542,12 +558,22 @@ common_record
 WM8960_IFACE2	0x09	6	ALRCGPIO			// 必须设置成GPIO模式，否则录音异常
 WM8960_ADDCTL4	0x30	0	MBSEL,0=0.9,1=0.65
 WM8960_POWER1	0x19	1	MICB
-mic_record
+mic_in1_record
+WM8960_LINVOL	0x0		5:0	LINVOL,0x3f=+30db
+WM8960_LINPATH	0x20	8	LMN1
+WM8960_LINVOL	0x0		7	LINMUTE,0
+WM8960_POWER3	0x2f	5	LMIC
+WM8960_LINPATH	0x20	5:4	LMICBOOST,0x3=+29db
+WM8960_LINPATH	0x20	3	LMIC2B
+WM8960_LADC		0x15	7:0	LADCVOL,0xff=+30db
+WM8960_POWER1	0x19	5	AINL
+WM8960_POWER1	0x19	3   ADCL
+mic_in2_record
 WM8960_INBMIX1	0x2b	3:1	LIN2BOOST,0x7=+6db
 WM8960_LADC		0x15	7:0	LADCVOL,0xff=+30db
 WM8960_POWER1	0x19	5	AINL
 WM8960_POWER1	0x19	3   ADCL
-linein_record
+linein_in3_record
 WM8960_INBMIX1	0x2b	6:4	LIN3BOOST,0x5=0db
 WM8960_INBMIX2	0x2c	6:4	RIN3BOOST,0x5=0db
 WM8960_LADC		0x15	7:0	LADCVOL,0xc3=0db
@@ -557,7 +583,80 @@ WM8960_POWER1	0x19	4	AINR
 WM8960_POWER1	0x19	3	ADCL
 WM8960_POWER1	0x19	2	ADCR
 
-amixer cset numid=43,iface=MIXER,name='Left Boost Mixer LINPUT2 Virtual SW' 1;
+amixer cset numid=49,iface=MIXER,name='Left Input Mixer Boost Switch' 1;
+amixer cset numid=43,iface=MIXER,name='Left Boost Mixer LINPUT1 Switch' 1;
+amixer cset numid=1,iface=MIXER,name='Capture Volume' 63 63;
+amixer cset numid=3,iface=MIXER,name='Capture Switch' 1 1;
+amixer cset numid=9,iface=MIXER,name='Left Input Boost Mixer LINPUT1 Volume' 3;
+amixer cset numid=36,iface=MIXER,name='ADC PCM Capture Volume' 255 255;
+
+arecord -t wav -c 1 -f S16_LE -r 48000 -d 5 00.wav
+
+[   92.254383] samsung-i2s eee30000.i2s: i2s_startup
+[   92.257615] wm8960 0-001a: wm8960_startup: (record)
+Recording WAVE[   92.264489] smdk-audio-wm8960 sound: smdk_hw_params: width=16, frmclk=48000
+[   92.270307] smdk-audio-wm8960 sound: smdk_hw_params: bfs=32, rfs=256
+[   92.276250] smdk-audio-wm8960 sound: smdk_hw_params: rclk=12288000
+[   92.282233] smdk-audio-wm8960 sound: smdk_hw_params: psr=4
+[   92.287517] s5pv210_epll_recalc_rate: fout_epll, parent_rate=24000000, fvco=80000000
+[   92.294981] smdk-audio-wm8960 sound: smdk_hw_params: fout_epll is 80000000, wanted 49152000
+[   92.303103] s5pv210_round_rate: (fout_epll, drate=49152000), (rate=49152000, m=49, p=3, s=3, k=9961, v=0)
+[   92.312283] s5pv210_round_rate: (fout_epll, drate=49152000), (rate=49152000, m=49, p=3, s=3, k=9961, v=0)
+[   92.321520] s5pv210_epll_set_rate: (fout_epll, drate=49152000), (rate=49152000, m=49, p=3, s=3, k=9961, v=0)
+[   92.331379] s5pv210_epll_recalc_rate: fout_epll, parent_rate=24000000, fvco=49152000
+[   92.338484] s5pv210_epll_recalc_rate: fout_epll, parent_rate=24000000, fvco=49152000
+[   92.345938] smdk-audio-wm8960 sound: smdk_hw_params: fout_epll want 49152000, got 49152000
+[   92.353927] samsung-i2s eee30000.i2s: i2s_set_sysclk: opclk=3
+[   92.359470] samsung-i2s eee30000.i2s: i2s_set_sysclk: rclksrc=1
+[   92.365194] samsung-i2s eee30000.i2s: i2s_set_sysclk: set parent eee30000.i2s_rclk_src-->i2s_audss, ok
+[   92.374163] samsung-i2s eee30000.i2s: i2s_set_sysclk: rfs=256, cdclk=out
+[   92.380626] samsung-i2s eee30000.i2s: i2s_set_clkdiv: bfs=32
+[   92.386081] wm8960 0-001a: wm8960_hw_params: (record) channels=1, width=16, rate=48000
+[   92.394195] wm8960 0-001a: slave mode, but proceeding with no clock configuration
+[   92.400949] samsung-i2s eee30000.i2s: i2s_hw_params: channels=1, width=16
+[   92.407655] wm8960 0-001a: wm8960_set_bias_level_out3: standby -> prepare
+[   92.414027] wm8960 0-001a: slave mode, but proceeding with no clock configuration
+[   92.421759] wm8960 0-001a: pop test : Queue MICB: reg=0x19, 0x2/0x2
+[   92.427293] wm8960 0-001a: pop test : MICB PRE_PMU
+[   92.431931] wm8960 0-001a: set_micb_event: (pmu)
+[   92.436361] wm8960 0-001a: pop test : Applying 0x2/0x2 to 19 in 20ms
+ '00.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
+[   92.467944] wm8960 0-001a: pop test : Queue Capture: reg=0xffffffff, 0x0/0x0
+[   92.473338] samsung-i2s eee30000.i2s: pop test : Queue Primary Capture: reg=0xffffffff, 0x0/0x0
+[   92.481747] wm8960 0-001a: pop test : Queue LINPUT1: reg=0xffffffff, 0x0/0x0
+[   92.488546] wm8960 0-001a: pop test : Queue Left Boost Mixer: reg=0x19, 0x20/0x20
+[   92.495753] wm8960 0-001a: pop test : Applying 0x20/0x20 to 19 in 20ms
+[   92.527969] wm8960 0-001a: pop test : Queue Left Input Mixer: reg=0x2f, 0x20/0x20
+[   92.533778] wm8960 0-001a: pop test : Applying 0x20/0x20 to 2f in 20ms
+[   92.567952] wm8960 0-001a: pop test : Queue Left ADC: reg=0x19, 0x8/0x8
+[   92.572919] wm8960 0-001a: pop test : Applying 0x8/0x8 to 19 in 20ms
+[   92.607945] wm8960 0-001a: wm8960_set_bias_level_out3: prepare -> on
+[   92.612696] smdk-audio-wm8960 sound: DAPM sequencing finished, waiting 20ms
+[   92.647701] samsung-i2s eee30000.i2s: i2s_trigger: start
+[   92.651410] samsung-i2s eee30000.i2s: config_setup
+[   92.656032] samsung-i2s eee30000.i2s: config_setup: RCLK_SRC=49152000Hz PSR=4, RCLK=256fs, BCLK=32fs
+[   97.665135] samsung-i2s eee30000.i2s: i2s_trigger: stop
+[   97.668857] wm8960 0-001a: wm8960_set_bias_level_out3: on -> prepare
+[   97.674919] wm8960 0-001a: pop test : Queue Left ADC: reg=0x19, 0x0/0x8
+[   97.681312] wm8960 0-001a: pop test : Applying 0x0/0x8 to 19 in 20ms
+[   97.707943] wm8960 0-001a: pop test : Queue Left Boost Mixer: reg=0x19, 0x0/0x20
+[   97.713669] wm8960 0-001a: pop test : Applying 0x0/0x20 to 19 in 20ms
+[   97.747949] wm8960 0-001a: pop test : Queue Left Input Mixer: reg=0x2f, 0x0/0x20
+[   97.753674] wm8960 0-001a: pop test : Applying 0x0/0x20 to 2f in 20ms
+[   97.787954] wm8960 0-001a: pop test : Queue LINPUT1: reg=0xffffffff, 0x0/0x0
+[   97.793346] wm8960 0-001a: pop test : Queue Capture: reg=0xffffffff, 0x0/0x0
+[   97.800160] samsung-i2s eee30000.i2s: pop test : Queue Primary Capture: reg=0xffffffff, 0x0/0x0
+[   97.808554] wm8960 0-001a: pop test : Queue MICB: reg=0x19, 0x0/0x2
+[   97.814586] wm8960 0-001a: pop test : Applying 0x0/0x2 to 19 in 20ms
+[   97.847949] wm8960 0-001a: pop test : MICB POST_PMD
+[   97.851240] wm8960 0-001a: set_micb_event: (pmd)
+[   97.855701] wm8960 0-001a: wm8960_set_bias_level_out3: prepare -> standby
+[   97.862746] smdk-audio-wm8960 sound: DAPM sequencing finished, waiting 20ms
+[   97.897488] wm8960 0-001a: wm8960_hw_free: (record)
+[   97.900790] samsung-i2s eee30000.i2s: i2s_shutdown
+[   97.905393] wm8960 0-001a: wm8960_shutdown: (record)
+
+amixer cset numid=44,iface=MIXER,name='Left Boost Mixer LINPUT2 Virtual SW' 1;
 amixer cset numid=5,iface=MIXER,name='Left Input Boost Mixer LINPUT2 Volume' 7;
 amixer cset numid=36,iface=MIXER,name='ADC PCM Capture Volume' 255 255;
 
@@ -623,8 +722,8 @@ Recording WAVE '11.wav' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
 [   84.893525] samsung-i2s eee30000.i2s: i2s_shutdown
 [   84.897337] wm8960 1-001a: wm8960_shutdown: (record)
 
-amixer cset numid=44,iface=MIXER,name='Left Boost Mixer LINPUT3 Virtual SW' 1;
-amixer cset numid=46,iface=MIXER,name='Right Boost Mixer RINPUT3 Virtual SW' 1;
+amixer cset numid=45,iface=MIXER,name='Left Boost Mixer LINPUT3 Virtual SW' 1;
+amixer cset numid=48,iface=MIXER,name='Right Boost Mixer RINPUT3 Virtual SW' 1;
 amixer cset numid=4,iface=MIXER,name='Left Input Boost Mixer LINPUT3 Volume' 5;
 amixer cset numid=6,iface=MIXER,name='Right Input Boost Mixer RINPUT3 Volume' 5;
 amixer cset numid=36,iface=MIXER,name='ADC PCM Capture Volume' 195 195;

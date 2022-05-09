@@ -445,9 +445,14 @@ static const struct snd_soc_dapm_route audio_paths[] = {
 	{ "Left ADC", NULL, "Left Input Mixer" },
 	{ "Right ADC", NULL, "Right Input Mixer" },
 	#else
+	{ "Left Input Mixer", "Boost Switch", "LINPUT1" },
+	{ "Right Input Mixer", "Boost Switch", "RINPUT1" },
+
+	{ "Left Boost Mixer", "LINPUT1 Switch", "Left Input Mixer" },
 	{ "Left Boost Mixer", "LINPUT2 Virtual SW", "LINPUT2" },
 	{ "Left Boost Mixer", "LINPUT3 Virtual SW", "LINPUT3" },
 
+	{ "Right Boost Mixer", "RINPUT1 Switch", "Right Input Mixer" },
 	{ "Right Boost Mixer", "RINPUT2 Virtual SW", "RINPUT2" },
 	{ "Right Boost Mixer", "RINPUT3 Virtual SW", "RINPUT3" },
 	
@@ -1465,12 +1470,22 @@ static int wm8960_probe(struct snd_soc_component *component)
 	snd_soc_component_update_bits(component, WM8960_ADDCTL4, BIT(0), 0);			//0x30 0   MBSEL,0=0.9,1=0.65
 	snd_soc_component_update_bits(component, WM8960_POWER1, BIT(1), BIT(1));		//0x19 1   MICB
 	
-	// mic_record
+	// mic_in1_record
+	snd_soc_component_update_bits(component, WM8960_LINVOL, 0x3f, 0x3f);			//0x0  5:0 LINVOL,0x3f=+30db
+	snd_soc_component_update_bits(component, WM8960_LINPATH, BIT(8), BIT(8));		//0x20 8   LMN1
+	snd_soc_component_update_bits(component, WM8960_LINVOL, BIT(7), 0);				//0x0  7   LINMUTE,0
+	snd_soc_component_update_bits(component, WM8960_POWER3, BIT(5), BIT(5));		//0x2f 5   LMIC
+	snd_soc_component_update_bits(component, WM8960_LINPATH, 0x3 << 4, 0x3 << 4);	//0x20 5:4 LMICBOOST,0x3=+29db
+	snd_soc_component_update_bits(component, WM8960_LINPATH, BIT(3), BIT(3));		//0x20 3   LMIC2B
+	snd_soc_component_update_bits(component, WM8960_LADC, 0xff, 0xff);				//0x15 7:0 LADCVOL,0xff=+30db
+	snd_soc_component_update_bits(component, WM8960_POWER1, BIT(5), BIT(5));		//0x19 5   AINL
+	
+	// mic_in2_record
 	snd_soc_component_update_bits(component, WM8960_INBMIX1, 0x7 << 1, 0x7 << 1);	//0x2b 3:1 LIN2BOOST,0x7=+6db
 	snd_soc_component_update_bits(component, WM8960_LADC, 0xff, 0xff);				//0x15 7:0 LADCVOL,0xff=+30db
 	snd_soc_component_update_bits(component, WM8960_POWER1, BIT(5), BIT(5));		//0x19 5   AINL
 	
-	// linein_record
+	// linein_in3_record
 	snd_soc_component_update_bits(component, WM8960_INBMIX1, 0x7 << 4, 0x5 << 4);	//0x2b 6:4 LIN3BOOST,0x5=0db
 	snd_soc_component_update_bits(component, WM8960_INBMIX2, 0x7 << 4, 0x5 << 4);	//0x2c 6:4 RIN3BOOST,0x5=0db
 	snd_soc_component_update_bits(component, WM8960_LADC, 0xff, 0xc3);				//0x15 7:0 LADCVOL,0xc3=0db

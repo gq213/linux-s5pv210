@@ -1,0 +1,337 @@
+// SPDX-License-Identifier: GPL-2.0
+
+/dts-v1/;
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/gpio/gpio.h>
+#include "210.dtsi"
+
+/ {
+	model = "tq210v4 based on S5PV210";
+	compatible = "samsung,s5pv210";
+
+	chosen {
+		bootargs = "console=ttySAC1 noinitrd root=/dev/mmcblk0p1 rw rootfstype=ext4 rootwait init=/linuxrc ignore_loglevel earlyprintk";
+	};
+
+	memory@20000000 {
+		device_type = "memory";
+		reg = <0x20000000 0x40000000>;
+	};
+
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		linux,cma {
+			compatible = "shared-dma-pool";
+			reusable;
+			size = <0x4000000>;
+			linux,cma-default;
+		};
+	};
+
+	210_misc {
+		compatible = "210,misc";
+	};
+
+	ethernet@88000000 {
+		compatible = "davicom,dm9000";
+		reg = <0x88000000 0x2 0x88000008 0x2>;
+		interrupt-parent = <&gph1>;
+		interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
+		local-mac-address = [00 00 de ad be ef];
+		davicom,no-eeprom;
+		pinctrl-names = "default";
+		pinctrl-0 = <&xm0_csn1 &xm0_oen &xm0_wen &xm0_addr2 &xm0_data>;
+		assigned-clocks = <&clocks CLK_SROMC>;
+		assigned-clock-rates = <0>;
+	};
+
+	sound {
+		compatible = "samsung,smdk-wm8960";
+		clocks = <&clocks FOUT_EPLL>;
+		clock-names = "fout_epll";
+		samsung,audio-codec = <&wm8960>, <&hdmi>;
+		samsung,i2s-controller = <&i2s0>;
+		samsung,model = "s5pv210-wm8960";
+	};
+
+	vbat: fixedregulator0 {
+		compatible = "regulator-fixed";
+		regulator-name = "vbat";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		regulator-boot-on;
+		regulator-always-on;
+	};
+
+	backlight {
+		compatible = "pwm-backlight";
+		pwms = <&pwm 0 50000 0>;
+		brightness-levels = <0 64 68 72 80 88 96 112 128 192 255>;
+		default-brightness-level = <6>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pwm0_out>;
+	};
+};
+
+&xxti {
+	clock-frequency = <24000000>;
+};
+
+&xusbxti {
+	clock-frequency = <24000000>;
+};
+
+&uart0 {
+	pinctrl-0 = <&uart0_data>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&uart1 {
+	pinctrl-0 = <&uart1_data>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&uart2 {
+	pinctrl-0 = <&uart2_data>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&uart3 {
+	pinctrl-0 = <&uart3_data>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&sdhci0 {
+	bus-width = <4>;
+	pinctrl-0 = <&sd0_clk &sd0_cmd &sd0_cd &sd0_bus4>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	assigned-clocks = <&clocks MOUT_MMC0>, <&clocks MOUT_MMC1>, <&clocks MOUT_MMC2>, <&clocks MOUT_MMC3>;
+	assigned-clock-parents = <&clocks MOUT_MPLL>, <&clocks MOUT_MPLL>, <&clocks MOUT_MPLL>, <&clocks MOUT_MPLL>;
+};
+
+&hsotg {
+	dr_mode = "peripheral";
+	//total_fifo_size=7808
+	g-rx-fifo-size = <512>;
+	g-np-tx-fifo-size = <512>;
+	g-tx-fifo-size = <768 768 768 512 512 512 512 384 
+					  384 384 384 256 256 256 128>;
+	status = "okay";
+};
+
+&usbphy {
+	status = "okay";
+};
+
+&ehci {
+	status = "okay";
+};
+
+&i2c0 {
+	samsung,i2c-sda-delay = <100>;
+	samsung,i2c-max-bus-freq = <100000>;
+	samsung,i2c-slave-addr = <0x10>;
+	status = "okay";
+
+	tps: tps@2d {
+		reg = <0x2d>;
+	};
+
+	wm8960: wm8960@1a {
+		compatible = "wlf,wm8960";
+		reg = <0x1a>;
+		wlf,shared-lrclk;
+		wlf,gpio-cfg = <1 0>;
+		wlf,hp-cfg = <0 0 0>;
+	};
+};
+
+&i2c1 {
+	samsung,i2c-sda-delay = <100>;
+	samsung,i2c-max-bus-freq = <100000>;
+	samsung,i2c-slave-addr = <0x10>;
+	status = "okay";
+};
+
+&clk_audss {
+	assigned-clocks = <&clk_audss CLK_MOUT_AUDSS>;
+	assigned-clock-parents = <&clocks FOUT_EPLL>;
+};
+
+&i2s0 {
+	#clock-cells = <1>;
+	status = "okay";
+};
+
+&i2c3 {
+	samsung,i2c-sda-delay = <100>;
+	samsung,i2c-max-bus-freq = <100000>;
+	samsung,i2c-slave-addr = <0x10>;
+	status = "okay";
+};
+
+&hdmi {
+	hpd-gpios = <&gph1 5 GPIO_ACTIVE_HIGH>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&hdmi_hpd>;
+	vdd-supply = <&vdig2_reg>;
+	vdd_osc-supply = <&vaux2_reg>;
+	vdd_pll-supply = <&vdig2_reg>;
+	ddc = <&i2c1>;
+	status = "okay";
+
+	assigned-clocks = <&clocks CLK_HDMI>, <&clocks SCLK_HDMI>;
+	assigned-clock-rates = <0>, <0>;
+};
+
+&hdmicec {
+	pinctrl-names = "default";
+	pinctrl-0 = <&hdmi_cec>;
+	status = "okay";
+
+	assigned-clocks = <&clocks CLK_HDMI>;
+	assigned-clock-rates = <0>;
+};
+
+&mixer {
+	status = "okay";
+
+	assigned-clocks = <&clocks CLK_MIXER>, <&clocks CLK_HDMI>,
+					<&clocks CLK_VP>, <&clocks SCLK_MIXER>;
+	assigned-clock-rates = <0>, <0>,
+					<0>, <0>;
+};
+
+&fimd {
+	pinctrl-0 = <&lcd_clk &lcd_data24>;
+	pinctrl-names = "default";
+	status = "okay";
+	
+	/* The maximum frequency of VCLK is 100Mhz(pad:50pf). */
+	assigned-clocks = <&clocks MOUT_FIMD>,
+					<&clocks FOUT_VPLL>,
+					<&clocks SCLK_FIMD>, <&clocks CLK_FIMD>;
+	assigned-clock-parents = <&clocks MOUT_VPLL>;
+	assigned-clock-rates = <0>, 
+					<65000000>,
+					<0>, <0>;
+
+	display-timings {
+		native-mode = <&timing0>;
+		
+		timing0: timing {
+			clock-frequency = <32500000>;
+			hactive = <800>;
+			vactive = <480>;
+			hfront-porch = <146>;
+			hsync-len = <20>;
+			hback-porch = <46>;
+			vfront-porch = <22>;
+			vsync-len = <10>;
+			vback-porch = <23>;
+			hsync-active = <1>;
+			vsync-active = <1>;
+		};
+	};
+};
+
+&pwm {
+	samsung,pwm-outputs = <0>;
+};
+
+&tps {
+	vcc1-supply = <&vbat>;
+	vcc2-supply = <&vbat>;
+	vcc3-supply = <&vbat>;
+	vcc4-supply = <&vbat>;
+	vcc5-supply = <&vbat>;
+	vcc6-supply = <&vbat>;
+	vcc7-supply = <&vbat>;
+	vccio-supply = <&vbat>;
+
+	regulators {
+		vrtc_reg: regulator@0 {
+			//1.8
+			regulator-always-on;
+		};
+
+		vio_reg: regulator@1 {
+			//1.8
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vdd1_reg: regulator@2 {
+			//1.2
+			regulator-min-microvolt = <600000>;
+			regulator-max-microvolt = <1500000>;
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vdd2_reg: regulator@3 {
+			//1.1
+			regulator-min-microvolt = <600000>;
+			regulator-max-microvolt = <1500000>;
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vdig1_reg: regulator@5 {
+			//1.8
+			regulator-always-on;
+		};
+
+		vdig2_reg: regulator@6 {
+			//1.1
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vpll_reg: regulator@7 {
+			//1.1
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vdac_reg: regulator@8 {
+			//2.6
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vaux1_reg: regulator@9 {
+			//2.8
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vaux2_reg: regulator@10 {
+			//3.3
+			regulator-always-on;
+		};
+
+		vaux33_reg: regulator@11 {
+			//3.3
+			regulator-boot-on;
+			regulator-always-on;
+		};
+
+		vmmc_reg: regulator@12 {
+			//3.0
+			regulator-boot-on;
+			regulator-always-on;
+		};
+	};
+};
+
+#include "tps65910.dtsi"

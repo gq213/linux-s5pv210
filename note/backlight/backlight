@@ -1,0 +1,6 @@
+[root@buildroot /]# cat /sys/class/backlight/backlight/brightness 
+6
+[root@buildroot /]# cat /sys/class/backlight/backlight/max_brightness 
+10
+[root@buildroot /]# echo 10 > /sys/class/backlight/backlight/brightness 
+[root@buildroot /]# echo 1 > /sys/class/backlight/backlight/brightness 

@@ -7,7 +7,8 @@ TMP_IMG=./tmp_img
 
 rm -rf ${SRC_KERNEL}
 
-cat arch/arm/boot/zImage arch/arm/boot/dts/210-sate210.dtb > ${SRC_KERNEL}
+#cat arch/arm/boot/zImage arch/arm/boot/dts/210-sate210.dtb > ${SRC_KERNEL}
+cat arch/arm/boot/zImage arch/arm/boot/dts/210-tq210v4.dtb > ${SRC_KERNEL}
 
 rm -rf ${DST_KERNEL}
 
