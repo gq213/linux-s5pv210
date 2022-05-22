@@ -121,10 +121,10 @@
 &hsotg {
 	dr_mode = "peripheral";
 	//total_fifo_size=7808
-	g-rx-fifo-size = <512>;
-	g-np-tx-fifo-size = <512>;
-	g-tx-fifo-size = <768 768 768 512 512 512 512 384 
-					  384 384 384 256 256 256 128>;
+	g-rx-fifo-size = <2048>;
+	g-np-tx-fifo-size = <256>;
+	g-tx-fifo-size = <256 256 256 256 256 256 256 256 
+					  256 256 256 256 256 256 256>;
 	status = "okay";
 };
 

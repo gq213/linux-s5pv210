@@ -261,7 +261,7 @@
 		};
 
 		hsotg: hsotg@ec000000 {
-			compatible = "samsung,s3c6400-hsotg";
+			compatible = "samsung,s5pv210-hsotg";
 			reg = <0xec000000 0x20000>;
 			interrupt-parent = <&vic1>;
 			interrupts = <24>;

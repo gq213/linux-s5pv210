@@ -58,6 +58,8 @@ static int uvc_queue_setup(struct vb2_queue *vq,
 	else
 		video->uvc_num_requests = 64;
 
+	pr_info("%s: uvc_num_requests=%d\n", __func__, video->uvc_num_requests);
+	
 	return 0;
 }
 
