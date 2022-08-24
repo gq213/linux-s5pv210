@@ -1,1 +1,1 @@
-mount -t nfs -o nolock -o tcp 192.168.100.108:/mnt/fr /mnt
+mount -t nfs -o nolock -o tcp 192.168.100.108:/mnt/disk /mnt

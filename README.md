@@ -37,4 +37,4 @@ make 210-tq210v4.dtb
 
 make modules -j4
 
-make modules_install INSTALL_MOD_PATH=/mnt/fr/modules
+make modules_install INSTALL_MOD_PATH=/mnt/disk/modules
