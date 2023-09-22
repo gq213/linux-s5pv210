@@ -1,5 +1,5 @@
 
-1、编译集成initramfs( https://github.com/gq213/buildroot-s5pv210 )和dtb的kernel
+1、编译集成initramfs( https://github.com/gq213/buildroot )和dtb的kernel
 
 make 210_defconfig 210-appended-dtb.config 210-enable-initrd.config
 
